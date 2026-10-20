@@ -1,0 +1,135 @@
+.main {
+  position: relative;
+  height: 160vh;
+  /* `clip` keeps the source's clipping without disabling the sticky pin that
+     `overflow: hidden` would break. */
+  overflow: clip;
+  transition-property: background-color, color;
+  transition-duration: 0.3s;
+  transition-timing-function: linear;
+  background-color: var(--prize-purple);
+  color: var(--dark-prize-purple);
+}
+
+/* gamesTabs palettes — each tab repaints the whole section. */
+.main[data-tab="board"] {
+  background-color: var(--cooldown-grey);
+  color: var(--dark-cooldown-grey);
+}
+.main[data-tab="prize"] {
+  background-color: var(--pay-green);
+  color: var(--dark-pay-green);
+}
+.main[data-tab="reward"] {
+  background-color: var(--prize-purple);
+  color: var(--dark-prize-purple);
+}
+.main[data-tab="team"] {
+  background-color: var(--overdrive-blue);
+  color: var(--dark-overdrive-blue);
+}
+
+.pinned {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+}
+
+.container {
+  position: relative;
+  padding-top: var(--space-l);
+  padding-bottom: var(--space-l);
+  height: 100vh;
+}
+
+.grid {
+  height: 100%;
+  align-items: center;
+}
+
+.item {
+  grid-column: 1 / -1;
+  position: relative;
+  z-index: 1;
+}
+
+@media (min-width: 48rem) {
+  .item {
+    grid-column: 2 / span 10;
+  }
+}
+
+@media (min-width: 77.5rem) {
+  .item {
+    grid-column: 3 / span 8;
+  }
+}
+
+.contentWrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  gap: var(--space-m);
+}
+
+.contentWrapper.spacedOut {
+  gap: var(--space-l);
+}
+
+.heading {
+  display: block;
+  font-family: var(--font-display);
+  font-weight: 400;
+  text-transform: uppercase;
+  font-size: var(--fs-h2);
+  line-height: 0.87;
+  letter-spacing: 0.04em;
+}
+
+.description {
+  display: block;
+  width: 100%;
+  max-width: 52rem;
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: var(--fs-body);
+  line-height: 1.33;
+  letter-spacing: 0.01em;
+}
+
+.tabsWrapper {
+  background-color: rgb(255 255 255 / 0.2);
+  border: 1px solid rgb(255 255 255 / 0.2);
+  border-radius: 0.5rem;
+  max-width: 100%;
+}
+
+.tabs {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  mask-image: linear-gradient(to right, black 80%, transparent);
+  mask-size: 125%;
+  mask-position: 100%;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.tabs button {
+  flex-grow: 1;
+  flex-shrink: 0;
+}
+
+@media (min-width: 48rem) {
+  .tabs {
+    mask: none;
+  }
+}

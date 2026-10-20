@@ -1,0 +1,71 @@
+.wrapper {
+  position: relative;
+  display: block;
+  opacity: 0;
+}
+
+.wrapper.visible {
+  opacity: 1;
+}
+
+.srOnly {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translateX(-400vw);
+}
+
+.inner {
+  display: block;
+}
+
+.inner > span {
+  display: inline-block;
+  overflow: hidden;
+  padding-bottom: 0.07em;
+}
+
+.inner > span:not(:first-child) {
+  margin-top: -0.07em;
+}
+
+.inner > span:last-child {
+  margin-bottom: -0.07em;
+}
+
+.inner > span > span {
+  display: inline-block;
+  will-change: transform;
+  transform: translateY(105%);
+  transition: transform 0.8s var(--ease-split);
+  transition-delay: calc(var(--delay, 0s) + var(--line-delay, 0s));
+}
+
+.wrapper.animate .inner > span > span {
+  transform: translateY(0);
+}
+
+/* The hero variant skews in from a 3d-ish start position. */
+.inner.skew {
+  display: inline-block;
+  transform: skewX(20deg) rotateX(40deg) rotateY(20deg);
+  transition: transform 0.8s var(--ease-split);
+  transition-delay: var(--delay, 0s);
+}
+
+.wrapper.animate .inner.skew {
+  transform: skewX(0deg) rotateX(0deg) rotateY(0deg);
+}
+
+/* Invisible probe used to find where the heading wraps; occupies no layout. */
+.measure {
+  display: block;
+  height: 0;
+  overflow: hidden;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.measure > span {
+  display: inline;
+}

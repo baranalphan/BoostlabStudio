@@ -1,0 +1,35 @@
+.wrapper {
+  --mask-hide: 0 100%;
+  position: fixed;
+  inset: 0;
+  background-color: var(--ink-black);
+  z-index: 40;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  mask-image: linear-gradient(to bottom, black 50%, transparent 50%);
+  mask-size: 100% 200%;
+  mask-position: var(--mask-hide);
+  transition: mask-position 0.8s var(--ease-slide);
+}
+
+.wrapper.done {
+  --mask-hide: 0 0%;
+  pointer-events: none;
+}
+
+.logo {
+  height: 6.4rem;
+  color: var(--dark-white);
+}
+
+@media (min-width: 48rem) {
+  .logo {
+    height: 8rem;
+  }
+}
+
+.wrapper.done .logo {
+  opacity: 0;
+  transition: opacity 0.3s linear;
+}

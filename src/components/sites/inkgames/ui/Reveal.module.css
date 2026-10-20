@@ -1,0 +1,36 @@
+.wrapper {
+  display: block;
+}
+
+.fade {
+  display: block;
+  opacity: 0;
+  transition-property: opacity;
+  transition-duration: 0.8s;
+  transition-timing-function: var(--ease-split);
+  transition-delay: var(--delay, 0s);
+}
+
+.wrapper[data-shown="true"] .fade {
+  opacity: 1;
+}
+
+.slide {
+  display: block;
+  transform: translate(0%, 102%);
+  opacity: 0;
+  transition-property: transform, opacity;
+  transition-duration: 0.8s;
+  transition-timing-function: var(--ease-slide);
+  transition-delay: var(--delay, 0s);
+}
+
+.wrapper[data-shown="true"] .slide {
+  transform: translate(0, 0);
+  opacity: 1;
+}
+
+.clip {
+  display: block;
+  overflow: hidden;
+}

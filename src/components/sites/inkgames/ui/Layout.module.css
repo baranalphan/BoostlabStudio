@@ -1,0 +1,44 @@
+.container {
+  width: 100%;
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding-left: var(--container-pad);
+  padding-right: var(--container-pad);
+}
+
+.grid {
+  display: grid;
+  grid-column-gap: var(--space-m);
+  grid-template-columns: repeat(12, 1fr);
+}
+
+.gridItem {
+  grid-column: 1 / -1;
+}
+
+.spacer {
+  display: block;
+  min-width: 0.1rem;
+}
+
+.kicker {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  text-transform: uppercase;
+  font-size: var(--fs-cap);
+  line-height: 1;
+  letter-spacing: -0.007em;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  color: currentColor;
+}
+
+.kickerSquare {
+  position: relative;
+  width: 0.6rem;
+  height: 0.6rem;
+  background-color: currentColor;
+  top: -0.05em;
+}

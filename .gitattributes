@@ -7,3 +7,12 @@
 # Batch files must always use CRLF
 *.bat text eol=crlf
 *.cmd text eol=crlf
+
+# Site assets are binary — never run line-ending conversion on them
+*.woff2 binary
+*.glb   binary
+*.mp4   binary
+*.png   binary
+*.jpg   binary
+*.webp  binary
+*.ico   binary
