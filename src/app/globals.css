@@ -1,17 +1,17 @@
 @import "tailwindcss";
 
 /*
- * INK Games design system.
+ * Boostlab design system.
  *
  * Values recovered verbatim from the source's SSR'd styled-components stylesheet
- * (see docs/research/inkgames/page-brief.md). Everything fluid interpolates against
+ * (see docs/research/boostlab/page-brief.md). Everything fluid interpolates against
  * V = min(100vw, 100vh * 16/9), exactly as the source does, so sizes shrink on short
  * viewports as well as narrow ones.
  */
 
 @font-face {
   font-family: RuderPlakatLL;
-  src: url("/sites/inkgames/fonts/RuderPlakatLL-Regular.woff2") format("woff2");
+  src: url("/sites/boostlab/fonts/RuderPlakatLL-Regular.woff2") format("woff2");
   font-display: swap;
   font-weight: 400;
   font-style: normal;
@@ -26,14 +26,14 @@
 }
 @font-face {
   font-family: PPNeueMontreal;
-  src: url("/sites/inkgames/fonts/PPNeueMontreal-Regular.woff2") format("woff2");
+  src: url("/sites/boostlab/fonts/PPNeueMontreal-Regular.woff2") format("woff2");
   font-display: swap;
   font-weight: 400;
   font-style: normal;
 }
 @font-face {
   font-family: PPNeueMontreal;
-  src: url("/sites/inkgames/fonts/PPNeueMontreal-Medium.woff2") format("woff2");
+  src: url("/sites/boostlab/fonts/PPNeueMontreal-Medium.woff2") format("woff2");
   font-display: swap;
   font-weight: 500;
   font-style: normal;
@@ -48,7 +48,7 @@
 }
 @font-face {
   font-family: PPNeueMontrealMono;
-  src: url("/sites/inkgames/fonts/PPNeueMontrealMono-Medium.woff2") format("woff2");
+  src: url("/sites/boostlab/fonts/PPNeueMontrealMono-Medium.woff2") format("woff2");
   font-display: swap;
   font-weight: 500;
   font-style: normal;
@@ -70,7 +70,7 @@
   --white: #ffffff;
   --dark-white: #fafbfd;
   --black: #000000;
-  --ink-black: #0a0e11;
+  --boostlab-black: #000000;
   --prize-purple: #c74fff;
   --dark-prize-purple: #4c0070;
   --cooldown-grey: #9fafbd;
@@ -174,7 +174,7 @@ html {
 body {
   font-family: var(--font-display);
   color: var(--dark-white);
-  background-color: var(--ink-black);
+  background-color: var(--boostlab-black);
   overflow-x: hidden;
 }
 

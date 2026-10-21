@@ -1,0 +1,236 @@
+.main {
+  display: inline-flex;
+  text-align: center;
+  text-decoration: none;
+  background: none;
+  border: none;
+}
+
+.main[disabled] {
+  pointer-events: none;
+  cursor: auto;
+  opacity: 0.5;
+}
+
+.main:focus,
+.main > a:focus {
+  box-shadow: none;
+}
+
+.content {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  margin-bottom: -0.3rem;
+  box-sizing: border-box;
+  border: 0.1rem solid;
+  border-color: transparent;
+  border-radius: 0.5rem;
+  transition-property: background-color, color, border-color, opacity;
+  transition-duration: 0.5s;
+  transition-timing-function: var(--ease-back);
+}
+
+.inner,
+.hover {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  transition-property: transform;
+  transition-duration: 0.5s;
+  transition-timing-function: var(--ease-back);
+}
+
+.hover {
+  position: absolute;
+  inset: 0;
+  transform: translateY(100%);
+}
+
+.main:not(:disabled):hover .inner,
+.main:focus .inner,
+.main > a:focus .inner {
+  transform: translateY(-100%);
+}
+
+.main:not(:disabled):hover .hover,
+.main:focus .hover,
+.main > a:focus .hover {
+  transform: translateY(0);
+}
+
+.icon {
+  position: relative;
+  width: 0.8rem;
+  top: -0.05em;
+}
+
+.icon svg {
+  width: 100%;
+}
+
+.link {
+  text-decoration: none;
+}
+
+/* ---- variants ---- */
+
+/* primary: white chip that turns Boostlab's pay-green on hover */
+.primary .content {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  text-transform: uppercase;
+  font-size: var(--fs-cap);
+  line-height: 1;
+  letter-spacing: -0.007em;
+  color: var(--black);
+  background-color: var(--white);
+}
+.primary .inner,
+.primary .hover {
+  min-height: 3.3rem;
+  padding: 0.5rem 0.9rem;
+}
+.primary:not(:disabled):hover .content,
+.primary:focus .content,
+.primary > a:focus .content {
+  color: var(--black);
+  background-color: var(--pay-green);
+  border-color: var(--pay-green);
+}
+
+/* secondary: dark chip on a dark-grey border, inverts to white */
+.secondary .content {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  text-transform: uppercase;
+  font-size: var(--fs-cap);
+  line-height: 1;
+  letter-spacing: -0.007em;
+  color: var(--dark-white);
+  background-color: var(--dark-grey-2);
+  border-color: var(--dark-grey-1);
+}
+.secondary .inner,
+.secondary .hover {
+  min-height: 3.3rem;
+  padding: 0.5rem 0.9rem;
+}
+.secondary:not(:disabled):hover .content,
+.secondary:focus .content,
+.secondary > a:focus .content {
+  color: var(--black);
+  background-color: var(--white);
+  border-color: var(--white);
+}
+
+/* ghost: transparent until hover, where a border appears */
+.ghost .content {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  text-transform: uppercase;
+  font-size: var(--fs-cap);
+  line-height: 1;
+  letter-spacing: -0.007em;
+  color: var(--dark-white);
+  background-color: transparent;
+}
+.ghost .inner,
+.ghost .hover {
+  min-height: 3.3rem;
+  padding: 0.5rem 0.9rem;
+}
+.ghost:not(:disabled):hover .content,
+.ghost:focus .content,
+.ghost > a:focus .content {
+  color: var(--dark-white);
+  background-color: transparent;
+  border-color: var(--dark-grey-1);
+}
+
+/* tab: translucent pill used by the gamesTabs section */
+.tab .content {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  text-transform: uppercase;
+  font-size: var(--fs-cap);
+  line-height: 1;
+  letter-spacing: -0.007em;
+  color: currentColor;
+  background-color: transparent;
+}
+.tab .inner,
+.tab .hover {
+  min-height: 3.3rem;
+  padding: 0.5rem 0.9rem;
+}
+.tab .content .label {
+  opacity: 0.5;
+}
+.tab:not(:disabled):hover .content,
+.tab:focus .content,
+.tab[data-active="true"] .content {
+  color: currentColor;
+  background-color: rgb(255 255 255 / 0.2);
+  border-color: transparent;
+}
+.tab[data-active="true"] .content .label {
+  opacity: 1;
+}
+
+/* simple + simple-underline: inline text links */
+.simple .content,
+.simpleUnderline .content {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: var(--fs-body);
+  line-height: 1.33;
+  letter-spacing: 0.01em;
+  color: var(--dark-white);
+  border: none;
+  border-radius: 0;
+}
+.simpleUnderline .content {
+  text-decoration: underline;
+}
+
+.label {
+  display: inline-block;
+}
+
+/* light: the footer's link chips — #EFEFEF on black text, inverting to the dark chip */
+.light .content {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: var(--fs-body);
+  line-height: 1.33;
+  letter-spacing: 0.01em;
+  color: var(--black);
+  background-color: var(--light-grey-2);
+  border-color: var(--light-grey-2);
+}
+.light .inner,
+.light .hover {
+  min-height: 3.3rem;
+  padding: 0.5rem 0.9rem;
+}
+.light:not(:disabled):hover .content,
+.light:focus .content,
+.light > a:focus .content {
+  color: var(--dark-white);
+  background-color: var(--dark-grey-2);
+  border-color: var(--dark-grey-1);
+}
+
+/* simpleDark: the legal links — plain black text, no chip */
+.simpleDark .content {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: var(--fs-body);
+  line-height: 1.33;
+  letter-spacing: 0.01em;
+  color: var(--black);
+  border: none;
+  border-radius: 0;
+}

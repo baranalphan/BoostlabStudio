@@ -1,0 +1,134 @@
+.main {
+  position: relative;
+  background-color: #000000;
+}
+
+.container {
+  position: relative;
+  color: var(--dark-white);
+  padding-top: var(--space-l);
+  padding-bottom: var(--space-l);
+  overflow: hidden;
+  z-index: 2;
+  background-color: #000000;
+}
+
+/* The source paints the section's own background back over the top and bottom
+   bands so the over-scanned 3d layer can't bleed into the neighbouring sections. */
+.container::before,
+.container::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: var(--space-l);
+  background-color: var(--boostlab-black);
+  z-index: -1;
+}
+
+.container::before {
+  bottom: 0;
+}
+
+.container::after {
+  top: 0;
+}
+
+.item12 {
+  grid-column: 1 / -1;
+}
+
+@media (min-width: 77.5rem) {
+  .item12 {
+    grid-column: 2 / span 10;
+  }
+}
+
+.inner {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-l);
+}
+
+.titleWrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  gap: var(--space-m);
+}
+
+.title {
+  font-family: var(--font-display);
+  font-weight: 400;
+  text-transform: uppercase;
+  font-size: var(--fs-h2);
+  line-height: 0.87;
+  letter-spacing: 0.04em;
+}
+
+.itemsWrapper {
+  position: relative;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-m);
+  transform-style: preserve-3d;
+}
+
+@media (min-width: 48rem) {
+  .itemsWrapper {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* The source over-scans the cards' shared 3d layer by 10% on each side. */
+.r3f {
+  top: -10%;
+  left: -10%;
+  width: 120%;
+  height: 120%;
+}
+
+.item {
+  position: relative;
+  max-width: 100%;
+  aspect-ratio: 0.7211538461538461;
+  color: var(--dark-white);
+  transform-style: preserve-3d;
+}
+
+.itemInner {
+  position: absolute;
+  inset: 0;
+  padding: var(--space-m);
+}
+
+.itemContent {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: var(--space-m);
+}
+
+@media (min-width: 48rem) {
+  .itemContent {
+    width: 75%;
+  }
+}
+
+.itemTitle {
+  font-family: var(--font-display);
+  font-weight: 400;
+  text-transform: uppercase;
+  font-size: var(--fs-h4);
+  line-height: 0.86;
+  letter-spacing: 0.05em;
+}

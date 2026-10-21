@@ -1,9 +1,9 @@
-import { HomeHero } from "@/components/sites/inkgames/blocks/HomeHero";
-import { Media } from "@/components/sites/inkgames/blocks/Media";
-import { ScrollFloat } from "@/components/sites/inkgames/blocks/ScrollFloat";
-import { Cards } from "@/components/sites/inkgames/blocks/Cards";
-import { NewsList } from "@/components/sites/inkgames/blocks/NewsList";
-import { homeAbout, homeExplore, homeHq } from "@/components/sites/inkgames/content";
+import { HomeHero } from "@/components/sites/boostlab/blocks/HomeHero";
+import { Media } from "@/components/sites/boostlab/blocks/Media";
+import { ScrollFloat } from "@/components/sites/boostlab/blocks/ScrollFloat";
+import { Cards } from "@/components/sites/boostlab/blocks/Cards";
+import { NewsList } from "@/components/sites/boostlab/blocks/NewsList";
+import { homeAbout, homeExplore } from "@/components/sites/boostlab/content";
 
 export default function Home() {
   return (
@@ -12,7 +12,6 @@ export default function Home() {
       <Media
         label={homeAbout.label}
         title={homeAbout.title}
-        cta={homeAbout.cta}
         media={homeAbout.media}
         variation="LandscapeRight"
       />
@@ -24,13 +23,6 @@ export default function Home() {
       />
       <Cards />
       <NewsList />
-      <Media
-        label={homeHq.label}
-        title={homeHq.title}
-        cta={homeHq.cta}
-        media={homeHq.media}
-        variation="LandscapeCenter"
-      />
     </>
   );
 }
