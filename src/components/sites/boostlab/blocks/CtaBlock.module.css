@@ -1,0 +1,95 @@
+.main {
+  position: relative;
+  background-color: var(--boostlab-black);
+  z-index: 2;
+}
+
+.inner {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-l);
+  margin: 0 var(--container-pad);
+}
+
+.inner::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-color: rgb(0 0 0 / 0.55);
+  z-index: 1;
+}
+
+.background {
+  position: absolute;
+  inset: 0;
+}
+
+.background img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.content {
+  padding-top: clamp(
+    18.5rem,
+    calc(18.5rem + 94 * (var(--v) - 32rem) / 1680),
+    clamp(27.9rem, calc(var(--v) / 1920 * 279), 29.0625rem)
+  );
+  padding-bottom: clamp(
+    18.5rem,
+    calc(18.5rem + 94 * (var(--v) - 32rem) / 1680),
+    clamp(27.9rem, calc(var(--v) / 1920 * 279), 29.0625rem)
+  );
+  padding-left: var(--space-m);
+  padding-right: var(--space-m);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  gap: var(--space-m);
+}
+
+.heading {
+  font-family: var(--font-display);
+  font-weight: 400;
+  text-transform: uppercase;
+  font-size: var(--fs-h2);
+  line-height: 0.87;
+  letter-spacing: 0.04em;
+}
+
+.downloadLinks {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.downloadLink {
+  background-color: var(--white);
+  color: var(--boostlab-black);
+  border: none;
+  border-radius: 0.56rem;
+  height: 3.5rem;
+  transition: background-color 0.5s var(--ease-back);
+}
+
+.downloadLink:hover {
+  background-color: var(--pay-green);
+}
+
+.downloadLink a {
+  display: block;
+  height: 100%;
+  padding: 0.5rem 0.7rem;
+}
+
+.downloadLink img {
+  height: 100%;
+  width: auto;
+}

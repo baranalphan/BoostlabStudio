@@ -1,17 +1,17 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
-import { Header } from "@/components/sites/inkgames/layout/Header";
-import { Footer } from "@/components/sites/inkgames/layout/Footer";
-import { Cookies } from "@/components/sites/inkgames/layout/Cookies";
-import { PageLoader } from "@/components/sites/inkgames/layout/PageLoader";
-import { SmoothScroll } from "@/components/sites/inkgames/layout/SmoothScroll";
-import { R3FCanvas } from "@/components/sites/inkgames/three/R3FCanvas";
+import { Header } from "@/components/sites/boostlab/layout/Header";
+import { Footer } from "@/components/sites/boostlab/layout/Footer";
+import { Cookies } from "@/components/sites/boostlab/layout/Cookies";
+import { PageLoader } from "@/components/sites/boostlab/layout/PageLoader";
+import { SmoothScroll } from "@/components/sites/boostlab/layout/SmoothScroll";
+import { R3FCanvas } from "@/components/sites/boostlab/three/R3FCanvas";
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#0A0E11",
+  themeColor: "#000000",
 };
 
 export const metadata: Metadata = {
@@ -21,21 +21,21 @@ export const metadata: Metadata = {
     process.env.NEXT_PUBLIC_SITE_URL ??
       (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000"),
   ),
-  title: "INK Games",
+  title: "Boostlab",
   description:
-    "INK Games is redefining how play and rewards connect. Our hit game Prize Kingdoms brings that experience to life with fun, rewards, and real cash prizes.",
+    "Boostlab is redefining how play and rewards connect. Our hit game Prize Kingdoms brings that experience to life with fun, rewards, and real cash prizes.",
   openGraph: {
-    title: "INK Games",
+    title: "Boostlab",
     description:
-      "INK Games is redefining how play and rewards connect. Our hit game Prize Kingdoms brings that experience to life with fun, rewards, and real cash prizes.",
-    images: [{ url: "/sites/inkgames/images/meta_image_0a45c42195.png", alt: "INK Games" }],
+      "Boostlab is redefining how play and rewards connect. Our hit game Prize Kingdoms brings that experience to life with fun, rewards, and real cash prizes.",
+    images: [{ url: "/sites/boostlab/images/meta_image_0a45c42195.png", alt: "Boostlab" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "INK Games",
+    title: "Boostlab",
     description:
-      "INK Games is redefining how play and rewards connect. Our hit game Prize Kingdoms brings that experience to life with fun, rewards, and real cash prizes.",
-    images: [{ url: "/sites/inkgames/images/meta_image_0a45c42195.png", alt: "INK Games" }],
+      "Boostlab is redefining how play and rewards connect. Our hit game Prize Kingdoms brings that experience to life with fun, rewards, and real cash prizes.",
+    images: [{ url: "/sites/boostlab/images/meta_image_0a45c42195.png", alt: "Boostlab" }],
   },
 };
 
