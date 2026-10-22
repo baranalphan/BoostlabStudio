@@ -6,7 +6,7 @@ import { CardCarousel } from "@/components/sites/boostlab/blocks/CardCarousel";
 import { ScrollList } from "@/components/sites/boostlab/blocks/ScrollList";
 import { CtaBlock } from "@/components/sites/boostlab/blocks/CtaBlock";
 import { ScrollAnim } from "@/components/sites/boostlab/blocks/ScrollAnim";
-import { gamesAbout, gamesTabs } from "@/components/sites/boostlab/content";
+import { gamesAbout, gamesCta, gamesTabs } from "@/components/sites/boostlab/content";
 
 const description =
   "Boostlab is redefining how play and rewards connect. Our hit game Prize Kingdoms brings that experience to life with fun, rewards, and real cash prizes.";
@@ -41,7 +41,12 @@ export default function GamesPage() {
       <ScrollFloat variant="gamesTabs" tabs={gamesTabs.tabs} />
       <CardCarousel />
       <ScrollList />
-      <CtaBlock />
+      <CtaBlock
+        background={gamesCta.backgroundMedia}
+        label={gamesCta.label}
+        heading={gamesCta.heading}
+        downloadLinks={gamesCta.downloadLinks}
+      />
       <ScrollAnim />
     </>
   );

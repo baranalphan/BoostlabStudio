@@ -19,8 +19,15 @@
   display: block;
 }
 
-.inner > span {
+/* The source shrink-wraps SplitTextInner only on the page headings (h1), so a heading
+   that is a flex item sizes to its longest line rather than to the unwrapped string.
+   Everything else keeps the block inner. */
+.inner.shrink {
   display: inline-block;
+}
+
+.inner > span {
+  display: block;
   overflow: hidden;
   padding-bottom: 0.07em;
 }
@@ -57,9 +64,15 @@
   transform: skewX(0deg) rotateX(0deg) rotateY(0deg);
 }
 
-/* Invisible probe used to find where the heading wraps; occupies no layout. */
+/* Invisible probe used to find where the heading wraps; occupies no layout.
+   It is taken out of flow so it cannot contribute to the heading's max-content
+   width — otherwise a heading that is a flex item (the support hero, the CTA
+   blocks) would size to the unwrapped string instead of its longest split line. */
 .measure {
-  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
   height: 0;
   overflow: hidden;
   visibility: hidden;

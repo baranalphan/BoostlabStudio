@@ -1,7 +1,8 @@
 # Boostlab — source brief
 
-Source: `https://boostlab.com/` and `https://boostlab.com/games/`
-Captured: 2026-10-20, desktop viewport 1497×784 (window 1512×900), plus mobile checks.
+Source: `https://boostlab.com/`, `https://boostlab.com/games/` and `https://boostlab.com/support/`
+Captured: 2026-10-20 (`/`, `/games/`) and 2026-10-21 (`/support/`),
+desktop viewport 1497×757/784, plus mobile checks at 390px.
 
 ## Stack observed on the source
 
@@ -146,6 +147,39 @@ Flight payload block order:
 7. **ScrollAnim** (`game`) — `height:160vh`, `#A1FF4F` on `#295500`, "gaming that pays you
    back." + copy + Explore → `/boostlabpay`, with the octo-coin scene.
 
+## `/support/` — Support
+
+The whole page is static layout; there is no 3d, no pinned scene and no scroll-linked
+motion. It opens with a bare `min-height:10rem` spacer that clears the fixed header.
+
+1. **SupportHero** — a flex row (column below 1240px). The `h1` "Help is on the way" is
+   `max-width:9ch`, and its wrapper adds a second `spacing(container)` of padding-left, so
+   the heading starts at 2× the gutter. Opposite it, `SupportHeroImageWrapper`
+   (`width:60%; max-width:42rem; margin-left:auto` → `width:100%; max-width:61.5rem;
+   flex:1` from 1240px) stacks five artwork layers on one 615×667 canvas: the first is
+   `position:relative` and sets the box, the rest are `position:absolute; right:0;
+   bottom:0`. Each starts at `transform:scale(0)` with `transform-origin:bottom right` and
+   settles at `scale(0.95)` over `0.8s cubic-bezier(.175,.885,.32,1.275)`, delayed
+   0.2 / 0.25 / 0.275 / 0.3 / 0.325s.
+2. **DepartmentLinks** — `spacing(l)` spacer, then five bordered cards in the 12-column
+   grid (`1/-1` → `span 6` at 768px → `span 4` at 1024px), `grid-row-gap: spacing(m)`,
+   each `padding: spacing(m)`, `border: 1px solid #373737`, `border-radius: radiusL`.
+   Card body: Heading4, `spacing(m)`, body copy at `max-width:30ch` and
+   `rgba(255,255,255,.3)`, `spacing(l)`, then a `secondary` button. Closing `spacing(l)`.
+3. **FAQs** — left column (`1/-1` → `span 4` at 1024px) holds the Heading4, `spacing(m)`,
+   a "View all faq's" button and a trailing `spacing(l)`. Right column is `7 / span 6`
+   from 1024px: nine rows, each an `<a>` with `#272727` on `#373737`, radius `radiusL`,
+   `padding: spacing(m)`, `margin-bottom: .5rem`, and a 0.3s
+   `cubic-bezier(.835,.12,.225,.77)` hover that flips the row to `#FAFAFA` with the
+   question in `#000` and the category label at `rgba(0,0,0,.3)`. Each row is
+   TextCap (muted) · `spacing(s)` · TextBody. A "View all" button closes the list.
+4. **CtaBlock** (link variant) — the same component as the games page's closing panel,
+   but contained, left-aligned and prop-driven: inside the Container, a `spacing(m)`
+   spacer, then the scrimmed `Container_d353c1105e.jpg` panel with Heading3
+   (`max-width:17ch`), `spacing(m)`, body copy (`max-width:40ch`), `spacing(m)` and a
+   `secondary` button. Content is `padding: spacing(m)`, `justify-content:space-between`,
+   `min-height:40rem` below 768px and `auto` above.
+
 ## Asset map
 
 | Source URL | Local path |
@@ -161,6 +195,7 @@ Flight payload block order:
 | `/images/download/{appstore,playstore}.png` | `public/sites/boostlab/download/` |
 | `/images/games/wonderland-blur.jpg` | `public/sites/boostlab/games/wonderland-blur.jpg` |
 | inline `<svg viewBox="0 0 159 32">` | `src/components/sites/boostlab/icons/BoostlabLogo.tsx` |
+| `/support/` hero layers (5 character illustrations) | **not reused** — see difference 8 |
 | inline `<svg viewBox="0 0 27 33">` | `.../icons/OctoMark.tsx` |
 | inline `<svg viewBox="0 0 8 8">` | `.../icons/ArrowIcon.tsx` |
 | inline `<svg viewBox="0 0 9 7">` | `.../icons/ChevronIcon.tsx` |
@@ -175,10 +210,12 @@ originals were taken from `webadm.boostlab.com` directly.
 |---|---|
 | `https://boostlab.com/` | `/` → `src/app/page.tsx` |
 | `https://boostlab.com/games/` | `/games` → `src/app/games/page.tsx` |
+| `https://boostlab.com/support/` | `/support` → `src/app/support/page.tsx` |
 
-Out of scope and left pointing at the source: `/support`, `/privacy`,
-`/terms-and-conditions`, `/boostlabpay`, `dashboard.boostlab.com`, the news articles, the
-App Store / Play Store listings and the social profiles.
+Out of scope and left pointing at the source: `/privacy`, `/terms-and-conditions`,
+`/boostlabpay`, `dashboard.boostlab.com`, the hosted help centre the support FAQ rows
+deep-link into, the news articles, the App Store / Play Store listings and the social
+profiles.
 
 ---
 
@@ -192,11 +229,13 @@ src/app/
   page.tsx              /        → HomeHero · Media · ScrollFloat · Cards · NewsList · Media
   games/page.tsx        /games   → GamesHero · Media · ScrollFloat(tabs) · CardCarousel
                                    · ScrollList · CtaBlock · ScrollAnim
+  support/page.tsx      /support → SupportHero · DepartmentLinks · FAQs · CtaBlock(link)
 src/components/sites/boostlab/
   content.ts            every string and media path, lifted from the CMS payload
   ui/                   Button · SplitText · Reveal · Layout (Container/Grid/Kicker/Spacer)
   layout/               Header · Footer · Cookies · PageLoader · SmoothScroll
   blocks/               one component per CMS block type
+  art/                  SupportHeroArt — the five original hero layers
   three/                R3FCanvas · R3FBlock · Elem3d · Model · Img3d · Float
                         · ScrollTransform · the five scenes
   icons/                the four inline SVGs, as components
@@ -250,6 +289,21 @@ at `scale={0.5}`, one generic loader covers all 24.
 6. **`--v` includes the source's 16:9 height cap** (`min(100vw, 100vh * 16/9)`), so type
    and spacing shrink on short windows exactly as they do on the source — screenshots
    only line up when both windows have the same height as well as the same width.
-7. Out-of-scope destinations (`/support`, `/privacy`,
-   `/terms-and-conditions`, `/boostlabpay`, the dashboard, the news articles, the app stores
-   and the social profiles) still point at the real site.
+7. Out-of-scope destinations (`/privacy`, `/terms-and-conditions`, `/boostlabpay`, the
+   dashboard, the hosted help centre behind the support FAQ rows, the news articles, the
+   app stores and the social profiles) still point at the real site.
+8. **The support hero artwork is original, not the source's.** The source stacks five of
+   its own game-character illustrations on the 615×667 canvas. Those drawings are the
+   source's artwork, so they were not downloaded or re-drawn; `art/SupportHeroArt.tsx`
+   supplies five original Boostlab shapes on the same canvas instead. The canvas size,
+   stacking order, `scale(0)` → `scale(0.95)` pop, easing and per-layer delays are the
+   source's declared values, so the hero's geometry and timing match — only the drawings
+   differ.
+9. **Support copy is rebranded**, as on the other two pages: the department contacts use
+   `@boostlab.com` addresses and the FAQ rows say "Boostlab ID" where the source says
+   "INK ID". One source typo ("conncections") is corrected. The FAQ rows and both "View
+   all" buttons still deep-link to the real hosted help centre, as the store badges on
+   `/games` still point at the real listings.
+10. **Support buttons are not wrapped in a `Reveal`.** The source puts its fade inside the
+   anchor; wrapping the shared `Button` from outside added a stray pixel to every row, so
+   the new blocks render the button directly. The buttons keep their hover roll.

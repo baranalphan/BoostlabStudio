@@ -49,3 +49,15 @@ export type GamesTab = {
   description: string;
   tabVariant: TabVariant;
 };
+
+export type DepartmentLink = {
+  title: string;
+  description: string;
+  cta: CmsLink;
+};
+
+export type FaqItem = {
+  category: string;
+  question: string;
+  url: string;
+};

@@ -1,0 +1,102 @@
+/* Declared values recovered from the source's SSR'd styled-components stylesheet. */
+
+.wrapper {
+  display: flex;
+  width: 100%;
+  padding-left: var(--container-pad);
+  flex-direction: column;
+  justify-content: center;
+}
+
+@media (min-width: 77.5rem) {
+  .wrapper {
+    margin: 0;
+    align-items: center;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+}
+
+.headingWrapper {
+  display: flex;
+  height: 100%;
+  padding-left: var(--container-pad);
+  align-items: center;
+}
+
+@media (max-width: 63.9375rem) {
+  .headingWrapper {
+    width: 100%;
+  }
+}
+
+.heading {
+  max-width: 9ch;
+  font-family: var(--font-display);
+  font-weight: 400;
+  text-transform: uppercase;
+  font-size: var(--fs-h1);
+  line-height: 0.88;
+  letter-spacing: 0.03em;
+}
+
+.imageWrapper {
+  position: relative;
+  display: flex;
+  width: 60%;
+  max-width: 42rem;
+  margin-left: auto;
+  justify-content: flex-end;
+}
+
+@media (min-width: 77.5rem) {
+  .imageWrapper {
+    width: 100%;
+    max-width: 61.5rem;
+    flex: 1;
+  }
+}
+
+.layer {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: auto;
+  height: auto;
+  margin-top: 1.2rem;
+  transform: scale(0);
+  transform-origin: bottom right;
+  transition: transform 0.8s var(--ease-back);
+  transition-delay: 0.2s;
+}
+
+/* The first layer stays in flow so it gives the stack its height. */
+.layer:nth-child(1) {
+  position: relative;
+  right: unset;
+  bottom: unset;
+  z-index: 1;
+}
+
+.layer:nth-child(2) {
+  transition-delay: 0.25s;
+}
+.layer:nth-child(3) {
+  transition-delay: 0.275s;
+}
+.layer:nth-child(4) {
+  transition-delay: 0.3s;
+}
+.layer:nth-child(5) {
+  transition-delay: 0.325s;
+}
+
+.imageWrapper[data-shown="true"] .layer {
+  transform: scale(0.95);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .layer {
+    transition: none;
+  }
+}

@@ -1,0 +1,47 @@
+.main {
+  position: relative;
+  z-index: 2;
+  background-color: var(--boostlab-black);
+}
+
+.grid {
+  grid-row-gap: var(--space-m);
+}
+
+.item {
+  grid-column: 1 / -1;
+  padding: var(--space-m);
+  border: 1px solid var(--dark-grey-1);
+  border-radius: var(--radius-l);
+}
+
+@media (min-width: 48rem) {
+  .item {
+    grid-column: span 6;
+  }
+}
+
+@media (min-width: 64rem) {
+  .item {
+    grid-column: span 4;
+  }
+}
+
+.title {
+  font-family: var(--font-display);
+  font-weight: 400;
+  text-transform: uppercase;
+  font-size: var(--fs-h4);
+  line-height: 0.86;
+  letter-spacing: 0.05em;
+}
+
+.description {
+  max-width: 30ch;
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: var(--fs-body);
+  line-height: 1.33;
+  letter-spacing: 0.01em;
+  color: rgb(255 255 255 / 0.3);
+}

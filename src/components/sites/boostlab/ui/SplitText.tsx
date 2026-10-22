@@ -12,6 +12,8 @@ type SplitTextProps = {
   lineStagger?: number;
   /** The hero heading also un-skews as the lines rise. */
   skew?: boolean;
+  /** Shrink the rendered block to its longest line, as the source's h1 does. */
+  shrink?: boolean;
   animate?: boolean;
   className?: string;
 };
@@ -31,6 +33,7 @@ export function SplitText({
   delay = 0,
   lineStagger = 0.1,
   skew = false,
+  shrink = false,
   animate = true,
   className,
 }: SplitTextProps) {
@@ -42,6 +45,15 @@ export function SplitText({
     const measure = () => {
       const node = measureRef.current;
       if (!node) return;
+      /*
+       * The probe is out of flow so it cannot inflate the heading's max-content width
+       * (see SplitText.module.css). Putting it back in flow for the read makes the
+       * heading resolve to the width the unwrapped string would occupy — capped by its
+       * own max-width — which is the width the source splits at. Without this the
+       * heading shrinks to its longest line and the next measurement re-wraps against
+       * that narrower box.
+       */
+      node.style.position = "static";
       const grouped: string[] = [];
       let currentTop: number | null = null;
       node.querySelectorAll<HTMLElement>("[data-word]").forEach((word) => {
@@ -53,6 +65,7 @@ export function SplitText({
           grouped[grouped.length - 1] += ` ${word.textContent ?? ""}`;
         }
       });
+      node.style.position = "";
       setLines((prev) =>
         prev && prev.length === grouped.length && prev.every((l, i) => l === grouped[i])
           ? prev
@@ -81,7 +94,7 @@ export function SplitText({
           </span>
         ))}
       </span>
-      <span aria-hidden="true" className={cn(styles.inner, skew && styles.skew)}>
+      <span aria-hidden="true" className={cn(styles.inner, skew && styles.skew, shrink && styles.shrink)}>
         {(lines ?? [children]).map((line, i) => (
           <span key={i}>
             <span style={{ "--line-delay": `${i * lineStagger}s` } as React.CSSProperties}>

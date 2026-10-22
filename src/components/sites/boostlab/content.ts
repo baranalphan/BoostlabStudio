@@ -8,6 +8,8 @@ import type {
   CarouselCard,
   CmsLink,
   CmsMedia,
+  DepartmentLink,
+  FaqItem,
   GamesTab,
   NewsItem,
   ScrollListSection,
@@ -317,4 +319,116 @@ export const gamesBoostlabPay = {
   description:
     "The BOOSTLABPAY App is the first peer-to-peer payment app that lets anyone turn their connections into cash. With a little help from AI.",
   cta: { label: "Explore", url: "/boostlabpay" } satisfies CmsLink,
+};
+
+/* ------------------------------------------------------------------- support */
+
+export const supportHero = {
+  title: "Help is on the way",
+};
+
+export const supportDepartments = {
+  items: [
+    {
+      title: "For general",
+      description: "Connect with us.",
+      cta: { label: "info@boostlab.com", url: "mailto:info@boostlab.com" },
+    },
+    {
+      title: "For support",
+      description: "Need assistance? Reach out to our support team.",
+      cta: { label: "support@boostlab.com", url: "mailto:support@boostlab.com" },
+    },
+    {
+      title: "For hq",
+      description: "Find out more about Boostlab HQ.",
+      cta: { label: "info@boostlab.com", url: "mailto:info@boostlab.com" },
+    },
+    {
+      title: "For careers",
+      description: "Start your journey with us.",
+      cta: { label: "jobs@boostlab.com", url: "mailto:jobs@boostlab.com" },
+    },
+    {
+      title: "For investment",
+      description: "Unlock potential. Enquire about investment opportunities today.",
+      cta: { label: "investor@boostlab.com", url: "mailto:investor@boostlab.com" },
+    },
+  ] satisfies DepartmentLink[],
+};
+
+/**
+ * The FAQ entries deep-link into the source's hosted help centre, which is outside the
+ * cloned scope — see the "out of scope" list in docs/research/boostlab/page-brief.md.
+ */
+const HELP_CENTRE = "https://ink.helpshift.com/hc/en/4-ink-id/";
+
+export const supportFaqs = {
+  title: "Some have asked...",
+  viewAllButton: { label: "View all faq's", url: HELP_CENTRE } satisfies CmsLink,
+  listButton: { label: "View all", url: HELP_CENTRE } satisfies CmsLink,
+  items: [
+    {
+      category: "Account",
+      question: "How do I contact support?",
+      url: `${HELP_CENTRE}faq/110-how-do-i-contact-support/`,
+    },
+    {
+      category: "General",
+      question: "What is a Boostlab ID?",
+      url: `${HELP_CENTRE}faq/8-what-is-an-ink-id/`,
+    },
+    {
+      category: "Account",
+      question: "Can I change my Boostlab ID?",
+      url: `${HELP_CENTRE}faq/84-can-i-change-my-ink-id/`,
+    },
+    {
+      category: "General",
+      question: "How do I get a Boostlab ID?",
+      url: `${HELP_CENTRE}faq/89-how-do-i-get-an-ink-id-1700067488/`,
+    },
+    {
+      category: "Account",
+      question: "When do my royalties become available for withdrawal?",
+      url: `${HELP_CENTRE}faq/83-when-do-my-royalties-become-available-for-withdrawal/`,
+    },
+    {
+      category: "Account",
+      question: "How do I withdraw royalties i\u2019ve earned?",
+      url: `${HELP_CENTRE}faq/82-how-do-i-withdraw-royalties-i-ve-earned/`,
+    },
+    {
+      category: "General",
+      question: "How do I make connections?",
+      url: `${HELP_CENTRE}faq/79-how-do-i-make-connections/`,
+    },
+    {
+      category: "General",
+      question: "How do I earn royalties on my connections?",
+      url: `${HELP_CENTRE}faq/81-how-do-i-earn-royalties-on-my-connections/`,
+    },
+    {
+      category: "General",
+      question: "What is the difference between Direct and Viral Connections?",
+      url: `${HELP_CENTRE}faq/80-what-is-the-difference-between-direct-and-viral-connections/`,
+    },
+  ] satisfies FaqItem[],
+};
+
+export const supportCta = {
+  heading: "in-game prize kingdom support",
+  description:
+    "Visit our In-Game Support for Prize Kingdoms or email us using the link below.",
+  cta: {
+    label: "Prize Kingdoms Support",
+    url: "mailto:support@prizekingdoms.com",
+  } satisfies CmsLink,
+  backgroundMedia: {
+    mime: "image/jpeg",
+    alt: "illustration with dice and a sky",
+    url: `${IMG}/Container_d353c1105e.jpg`,
+    width: 2800,
+    height: 1200,
+  } satisfies CmsMedia,
 };

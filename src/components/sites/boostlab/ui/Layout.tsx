@@ -45,9 +45,18 @@ export function GridItem({
   );
 }
 
-/** Vertical rhythm element. `size` maps onto the source's spacing scale. */
-export function Spacer({ size = "m" }: { size?: "xs" | "s" | "m" | "l" | "xl" }) {
-  return <span className={styles.spacer} style={{ minHeight: `var(--space-${size})` }} />;
+type SpacingToken = "xs" | "s" | "m" | "l" | "xl";
+const spacingTokens: SpacingToken[] = ["xs", "s", "m", "l", "xl"];
+
+/**
+ * Vertical rhythm element. `size` maps onto the source's spacing scale, or takes a
+ * literal rem length for the few spacers the source sets off-scale.
+ */
+export function Spacer({ size = "m" }: { size?: SpacingToken | `${number}rem` }) {
+  const minHeight = spacingTokens.includes(size as SpacingToken)
+    ? `var(--space-${size})`
+    : size;
+  return <span className={styles.spacer} style={{ minHeight }} />;
 }
 
 /** The small mono label with the filled square in front of it. */

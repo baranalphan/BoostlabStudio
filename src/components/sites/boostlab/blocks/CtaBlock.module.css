@@ -93,3 +93,43 @@
   height: 100%;
   width: auto;
 }
+
+/* ---- link variant (the support page's closing panel) ---- */
+
+.innerContained {
+  margin: 0;
+}
+
+.contentStart {
+  padding: var(--space-m);
+  align-items: flex-start;
+  justify-content: space-between;
+  text-align: left;
+  min-height: 40rem;
+  gap: 0;
+}
+
+@media (min-width: 48rem) {
+  .contentStart {
+    min-height: auto;
+  }
+}
+
+.headingLink {
+  max-width: 17ch;
+  font-family: var(--font-display);
+  font-weight: 400;
+  text-transform: uppercase;
+  font-size: var(--fs-h3);
+  line-height: 0.9;
+  letter-spacing: 0.07em;
+}
+
+.description {
+  max-width: 40ch;
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: var(--fs-body);
+  line-height: 1.33;
+  letter-spacing: 0.01em;
+}
