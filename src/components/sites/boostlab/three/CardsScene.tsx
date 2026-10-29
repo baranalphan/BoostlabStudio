@@ -14,9 +14,9 @@ const IMG = "/sites/boostlab/3d/images";
 const PI = Math.PI;
 
 const BACKDROP: Record<CardVariant, string> = {
-  play: `${IMG}/game-bg/magic-blur.webp`,
-  win: `${IMG}/game-bg/egypt-blur.webp`,
-  earn: `${IMG}/game-bg/wonderland-blur.webp`,
+  play: "/sites/boostlab/images/sins-simulator.jpg",
+  win: "/sites/boostlab/images/idle-reef.jpg",
+  earn: "/sites/boostlab/images/pyramid-diggers.jpg",
 };
 
 /* Object tables lifted from the source bundle, one per card variant. */
