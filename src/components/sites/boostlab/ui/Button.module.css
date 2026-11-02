@@ -76,30 +76,6 @@
 
 /* ---- variants ---- */
 
-/* primary: white chip that turns Boostlab's pay-green on hover */
-.primary .content {
-  font-family: var(--font-mono);
-  font-weight: 500;
-  text-transform: uppercase;
-  font-size: var(--fs-cap);
-  line-height: 1;
-  letter-spacing: -0.007em;
-  color: var(--black);
-  background-color: var(--white);
-}
-.primary .inner,
-.primary .hover {
-  min-height: 3.3rem;
-  padding: 0.5rem 0.9rem;
-}
-.primary:not(:disabled):hover .content,
-.primary:focus .content,
-.primary > a:focus .content {
-  color: var(--black);
-  background-color: var(--pay-green);
-  border-color: var(--pay-green);
-}
-
 /* secondary: dark chip on a dark-grey border, inverts to white */
 .secondary .content {
   font-family: var(--font-mono);
@@ -149,36 +125,6 @@
   border-color: var(--dark-grey-1);
 }
 
-/* tab: translucent pill used by the gamesTabs section */
-.tab .content {
-  font-family: var(--font-mono);
-  font-weight: 500;
-  text-transform: uppercase;
-  font-size: var(--fs-cap);
-  line-height: 1;
-  letter-spacing: -0.007em;
-  color: currentColor;
-  background-color: transparent;
-}
-.tab .inner,
-.tab .hover {
-  min-height: 3.3rem;
-  padding: 0.5rem 0.9rem;
-}
-.tab .content .label {
-  opacity: 0.5;
-}
-.tab:not(:disabled):hover .content,
-.tab:focus .content,
-.tab[data-active="true"] .content {
-  color: currentColor;
-  background-color: rgb(255 255 255 / 0.2);
-  border-color: transparent;
-}
-.tab[data-active="true"] .content .label {
-  opacity: 1;
-}
-
 /* simple + simple-underline: inline text links */
 .simple .content,
 .simpleUnderline .content {
@@ -197,40 +143,4 @@
 
 .label {
   display: inline-block;
-}
-
-/* light: the footer's link chips — #EFEFEF on black text, inverting to the dark chip */
-.light .content {
-  font-family: var(--font-body);
-  font-weight: 400;
-  font-size: var(--fs-body);
-  line-height: 1.33;
-  letter-spacing: 0.01em;
-  color: var(--black);
-  background-color: var(--light-grey-2);
-  border-color: var(--light-grey-2);
-}
-.light .inner,
-.light .hover {
-  min-height: 3.3rem;
-  padding: 0.5rem 0.9rem;
-}
-.light:not(:disabled):hover .content,
-.light:focus .content,
-.light > a:focus .content {
-  color: var(--dark-white);
-  background-color: var(--dark-grey-2);
-  border-color: var(--dark-grey-1);
-}
-
-/* simpleDark: the legal links — plain black text, no chip */
-.simpleDark .content {
-  font-family: var(--font-body);
-  font-weight: 400;
-  font-size: var(--fs-body);
-  line-height: 1.33;
-  letter-spacing: 0.01em;
-  color: var(--black);
-  border: none;
-  border-radius: 0;
 }

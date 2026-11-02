@@ -1,48 +1,36 @@
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { Container, Kicker, Spacer } from "../ui/Layout";
-import { Button } from "../ui/Button";
 import { SplitText } from "../ui/SplitText";
 import { Reveal } from "../ui/Reveal";
-import type { CmsLink, CmsMedia, MediaVariation } from "@/types/boostlab";
+import type { CmsMedia } from "@/types/boostlab";
 import styles from "./Media.module.css";
 
-const variationClass: Record<MediaVariation, string> = {
-  LandscapeRight: styles.landscapeRight,
-  LandscapeCenter: styles.landscapeCenter,
-  LandscapeRightBottom: styles.landscapeRightBottom,
-  PortraitRight: styles.landscapeRight,
-};
-
 /**
- * The source's ComponentBlocksMedia. A text column on the left and a perspective-tilted
- * media card on the right (or centred), with the card's crop and placement switching per
- * `variation`.
+ * The source's ComponentBlocksMedia. Text and a perspective-tilted media card sit side
+ * by side, centred as one unit.
  */
 export function Media({
   label,
   title,
   description,
-  cta,
   media,
-  variation = "LandscapeRight",
-  priority = false,
 }: {
   label?: string;
   title: string;
   description?: string;
-  cta?: CmsLink;
   media: CmsMedia;
-  variation?: MediaVariation;
-  priority?: boolean;
 }) {
   const isVideo = media.mime.startsWith("video");
-  const isGif = media.url.endsWith(".gif");
-  const perspective = variation !== "LandscapeRightBottom";
+  // GIFs and looping logo animations share the same framed, uncropped treatment.
+  const isGif = media.url.endsWith(".gif") || Boolean(media.animation);
+  // Other videos get a card in the video's own aspect ratio instead of the 1.5:1 crop,
+  // so nothing is cut off.
+  const ownRatio = isVideo && !isGif && media.width && media.height;
 
   return (
     <section className={styles.main}>
-      <Container className={cn(styles.container, variationClass[variation])}>
+      <Container className={cn(styles.container, styles.landscapeRight)}>
         <div className={styles.contentWrapper}>
           {label ? (
             <Reveal>
@@ -61,25 +49,22 @@ export function Media({
               </Reveal>
             </>
           ) : null}
-          {cta ? (
-            <>
-              <Spacer size="m" />
-              <Reveal delay={0.3}>
-                <Button href={cta.url} newTab={cta.newTab} variant="secondary" withIcon>
-                  {cta.label}
-                </Button>
-              </Reveal>
-            </>
-          ) : null}
         </div>
 
-        <div className={styles.imageWrapper}>
-          <div className={cn(styles.mediaOuter, perspective && styles.perspective)}>
+        <div
+          className={cn(styles.imageWrapper, isGif && styles.gifWrapper, ownRatio && styles.ratioWrapper)}
+          style={
+            ownRatio
+              ? ({ "--media-ratio": `${media.width} / ${media.height}` } as React.CSSProperties)
+              : undefined
+          }
+        >
+          <div className={cn(styles.mediaOuter, styles.perspective)}>
             <div className={styles.mediaInner}>
               <div
                 className={cn(
                   styles.mediaFill,
-                  perspective && !isGif && styles.scaleUp,
+                  !isGif && !ownRatio && styles.scaleUp,
                   isGif && styles.mediaFillGif
                 )}
               >
@@ -100,7 +85,6 @@ export function Media({
                     width={media.width ?? 1600}
                     height={media.height ?? 1200}
                     sizes="(max-width: 1024px) 100vw, 70vw"
-                    preload={priority}
                     unoptimized={media.url.endsWith(".gif")}
                   />
                 )}

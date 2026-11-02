@@ -9,8 +9,8 @@ import { header } from "../content";
 import styles from "./Header.module.css";
 
 /**
- * Fixed header. It starts transparent and fades in once the page loader clears
- * (`html[data-loaded]`), and retracts upward while scrolling down, returning on
+ * Fixed header. It fades in as the page opens, and retracts upward while scrolling down,
+ * returning on
  * scroll up — the same behaviour the source's header has.
  */
 export function Header() {

@@ -1,7 +1,5 @@
 import { Container } from "../ui/Layout";
 import { SplitText } from "../ui/SplitText";
-import { R3FBlock } from "../three/R3FBlock";
-import { HeroScene } from "../three/HeroScene";
 import { homeHero } from "../content";
 import styles from "./HomeHero.module.css";
 
@@ -16,10 +14,6 @@ export function HomeHero() {
             </SplitText>
           </h1>
         </div>
-        <R3FBlock>
-          <HeroScene />
-        </R3FBlock>
-        <div className={styles.blur} aria-hidden="true" />
       </Container>
     </section>
   );

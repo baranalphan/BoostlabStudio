@@ -28,23 +28,6 @@ export function Grid({
   );
 }
 
-/**
- * The source drives column spans off its breakpoint set. Rather than generate a class
- * per combination, spans are passed through as custom properties and read by the
- * media queries in GridItem.module.css.
- */
-export function GridItem({
-  children,
-  className,
-  ...rest
-}: React.ComponentPropsWithoutRef<"div">) {
-  return (
-    <div className={cn(styles.gridItem, className)} {...rest}>
-      {children}
-    </div>
-  );
-}
-
 type SpacingToken = "xs" | "s" | "m" | "l" | "xl";
 const spacingTokens: SpacingToken[] = ["xs", "s", "m", "l", "xl"];
 

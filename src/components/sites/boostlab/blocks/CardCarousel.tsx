@@ -14,10 +14,16 @@ import styles from "./CardCarousel.module.css";
 
 import "swiper/css";
 
+/*
+ * Swiper's loop mode needs more slides than are on screen at once, so the game list is
+ * repeated; scrolling past the last game simply brings the first one back round.
+ */
+const REPEAT = 3;
+const SLIDES = Array.from({ length: REPEAT }, () => gamesCarousel.cards).flat();
+
 /**
- * The source's ComponentBlocksCardCarousel. Inactive slides sit at scale(0.7); the active
- * one scales to 1 and rotates a half turn on Y, flipping from the still artwork to the
- * gameplay video on its back face.
+ * The source's ComponentBlocksCardCarousel, looping endlessly through our games. Inactive
+ * slides sit at scale(0.7); the active one scales up to 1.
  */
 export function CardCarousel() {
   const swiper = useRef<SwiperClass | null>(null);
@@ -40,39 +46,32 @@ export function CardCarousel() {
           onSwiper={(instance) => {
             swiper.current = instance;
           }}
-          slidesPerView={1.5}
+          // Exactly three whole cards on screen (one on phones) — no peeking neighbours.
+          slidesPerView={1}
           spaceBetween={0}
           centeredSlides
-          initialSlide={Math.floor(gamesCarousel.cards.length / 2)}
+          loop
           breakpoints={{
-            768: { slidesPerView: 2, spaceBetween: 20 },
-            1024: { slidesPerView: 3, spaceBetween: 20 },
-            1440: { slidesPerView: 3.5, spaceBetween: 30 },
-            1800: { slidesPerView: 4, spaceBetween: 40 },
+            768: { slidesPerView: 3, spaceBetween: 20 },
+            1440: { slidesPerView: 3, spaceBetween: 30 },
+            1800: { slidesPerView: 3, spaceBetween: 40 },
           }}
         >
-          {gamesCarousel.cards.map((card) => (
-            <SwiperSlide key={card.label}>
-              <div className={cn(styles.face, styles.faceBack)}>
-                <div className={styles.faceMedia}>
-                  <video
-                    src={card.video.url}
-                    autoPlay
-                    muted
-                    loop
-                    playsInline
-                    preload="metadata"
-                    aria-label={card.video.alt ?? undefined}
-                  />
-                </div>
-                <div className={styles.faceInner}>
-                  <Kicker>{card.label}</Kicker>
-                  <p className={styles.itemTitle}>{card.title}</p>
-                </div>
-              </div>
+          {SLIDES.map((card, i) => (
+            <SwiperSlide key={`${card.title}-${i}`}>
               <div className={styles.face}>
+                {card.url ? (
+                  <a
+                    className={styles.cardLink}
+                    href={card.url}
+                    target="_blank"
+                    rel="noreferrer noopener"
+                    aria-label={`${card.title} on Steam`}
+                  />
+                ) : null}
                 <div className={styles.faceMedia}>
                   <Image
+                    className={styles.faceImage}
                     src={card.image.url}
                     alt={card.image.alt ?? ""}
                     width={card.image.width ?? 900}
@@ -81,11 +80,9 @@ export function CardCarousel() {
                   />
                 </div>
                 <div className={styles.faceInner}>
-                  <Kicker>{card.label}</Kicker>
                   <p className={styles.itemTitle}>{card.title}</p>
                 </div>
               </div>
-
             </SwiperSlide>
           ))}
         </Swiper>

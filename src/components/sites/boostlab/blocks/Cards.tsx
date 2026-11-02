@@ -1,14 +1,13 @@
-import { Container, Grid, Kicker, Spacer } from "../ui/Layout";
+import Image from "next/image";
+import { Container, Grid, Spacer } from "../ui/Layout";
 import { SplitText } from "../ui/SplitText";
-import { Reveal } from "../ui/Reveal";
-import { R3FBlock } from "../three/R3FBlock";
-import { CardsScene } from "../three/CardsScene";
 import { homeCards } from "../content";
 import styles from "./Cards.module.css";
 
 /**
- * The source's ComponentBlocksCards. Three 0.72:1 cards, each a live 3d scene behind the
- * card's label and title, under a centred heading and a CTA.
+ * The source's ComponentBlocksCards. Three 0.72:1 game artwork cards with the game's title
+ * on top, under a centred heading. Hovering lifts the card, zooms the artwork
+ * and sweeps a highlight across it.
  */
 export function Cards() {
   return (
@@ -18,9 +17,6 @@ export function Cards() {
           <div className={styles.item12}>
             <div className={styles.inner}>
               <div className={styles.titleWrapper}>
-                <Reveal>
-                  <Kicker>{homeCards.label}</Kicker>
-                </Reveal>
                 <h2 className={styles.title}>
                   <SplitText>{homeCards.title}</SplitText>
                 </h2>
@@ -28,15 +24,29 @@ export function Cards() {
 
               <div className={styles.itemsWrapper}>
                 {homeCards.cards.map((card) => (
-                  <div className={styles.item} key={card.cardVariant} data-card-index>
-                    <R3FBlock>
-                      <CardsScene variant={card.cardVariant} />
-                    </R3FBlock>
+                  <div className={styles.item} key={card.title} data-card-index>
+                    {"url" in card ? (
+                      <a
+                        className={styles.cardLink}
+                        href={card.url}
+                        target="_blank"
+                        rel="noreferrer noopener"
+                        aria-label={`${card.title} on Steam`}
+                      />
+                    ) : null}
+                    <div className={styles.itemMedia}>
+                      <Image
+                        className={styles.itemImage}
+                        src={card.image.url}
+                        alt={card.image.alt}
+                        width={card.image.width}
+                        height={card.image.height}
+                        sizes="(min-width: 48rem) 33vw, 100vw"
+                      />
+                      <span className={styles.itemShine} aria-hidden="true" />
+                    </div>
                     <div className={styles.itemInner}>
                       <div className={styles.itemContent}>
-                        <Reveal delay={0.6}>
-                          <Kicker>{card.label}</Kicker>
-                        </Reveal>
                         <p className={styles.itemTitle}>
                           <SplitText delay={0.7}>{card.title}</SplitText>
                         </p>

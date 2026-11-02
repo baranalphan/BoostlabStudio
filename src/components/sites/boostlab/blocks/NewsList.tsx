@@ -6,13 +6,17 @@ import { Container, Grid, Kicker } from "../ui/Layout";
 import { SplitText } from "../ui/SplitText";
 import { Reveal } from "../ui/Reveal";
 import { homeNews } from "../content";
+import type { NewsItem } from "@/types/boostlab";
 import styles from "./NewsList.module.css";
 
-/** `2025-05-14` → `05.14.25`, the format the source prints. */
-function formatDate(iso: string) {
+/** `2025-05-14` → `05.14.25`, the format the source prints; undated items read "Soon". */
+function formatDate(iso?: string) {
+  if (!iso) return "Soon";
   const [y, m, d] = iso.split("-");
   return `${m}.${d}.${y.slice(2)}`;
 }
+
+const NEWS: NewsItem[] = homeNews.news;
 
 export function NewsList() {
   const [hovered, setHovered] = useState<number | null>(null);
@@ -32,30 +36,39 @@ export function NewsList() {
         </Grid>
 
         <ul className={styles.list}>
-          {homeNews.news.map((item, i) => (
-            <li key={`${item.date}-${item.description}`} style={{ display: "contents" }}>
-              <a
-                className={styles.line}
-                href={item.url}
-                target="_blank"
-                rel="noreferrer noopener"
-                onMouseEnter={() => setHovered(i)}
-                onMouseLeave={() => setHovered((h) => (h === i ? null : h))}
-                onFocus={() => setHovered(i)}
-                onBlur={() => setHovered((h) => (h === i ? null : h))}
-              >
+          {NEWS.map((item, i) => {
+            const hoverProps = {
+              className: styles.line,
+              onMouseEnter: () => setHovered(i),
+              onMouseLeave: () => setHovered((h) => (h === i ? null : h)),
+              onFocus: () => setHovered(i),
+              onBlur: () => setHovered((h) => (h === i ? null : h)),
+            };
+            const content = (
+              <>
                 <span className={styles.cap}>{formatDate(item.date)}</span>
                 <span className={styles.cap}>{item.title}</span>
                 <span className={styles.body}>{item.description}</span>
-              </a>
-            </li>
-          ))}
+              </>
+            );
+            return (
+              <li key={item.description} style={{ display: "contents" }}>
+                {item.url ? (
+                  <a {...hoverProps} href={item.url} target="_blank" rel="noreferrer noopener">
+                    {content}
+                  </a>
+                ) : (
+                  <div {...hoverProps}>{content}</div>
+                )}
+              </li>
+            );
+          })}
         </ul>
       </Container>
 
-      {homeNews.news.map((item, i) => (
+      {NEWS.map((item, i) => (
         <div
-          key={`${item.date}-${item.description}`}
+          key={item.description}
           className={styles.image}
           data-shown={hovered === i ? "true" : "false"}
           aria-hidden="true"

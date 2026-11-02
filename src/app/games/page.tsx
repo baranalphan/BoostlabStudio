@@ -1,53 +1,54 @@
 import type { Metadata } from "next";
 import { GamesHero } from "@/components/sites/boostlab/blocks/GamesHero";
 import { Media } from "@/components/sites/boostlab/blocks/Media";
-import { ScrollFloat } from "@/components/sites/boostlab/blocks/ScrollFloat";
 import { CardCarousel } from "@/components/sites/boostlab/blocks/CardCarousel";
-import { ScrollList } from "@/components/sites/boostlab/blocks/ScrollList";
 import { CtaBlock } from "@/components/sites/boostlab/blocks/CtaBlock";
-import { ScrollAnim } from "@/components/sites/boostlab/blocks/ScrollAnim";
-import { gamesAbout, gamesCta, gamesTabs } from "@/components/sites/boostlab/content";
+import { gamesAbout, gamesCarousel, gamesCta } from "@/components/sites/boostlab/content";
+import { SITE_URL, jsonLd, pageMetadata } from "@/lib/seo";
 
-const description =
-  "Boostlab is redefining how play and rewards connect. Our hit game Prize Kingdoms brings that experience to life with fun, rewards, and real cash prizes.";
+export const metadata: Metadata = pageMetadata({
+  title: "Games",
+  description:
+    "Explore the games from Boostlab Game Studio: Idle Reef, out now on Steam, plus Pyramid Diggers and Sins Simulator, coming soon.",
+  path: "/games",
+});
 
-export const metadata: Metadata = {
-  title: "Prize Kingdoms | Boostlab",
-  description,
-  openGraph: {
-    title: "Prize Kingdoms | Boostlab",
-    description,
-    images: [{ url: "/sites/boostlab/images/meta_image_0a45c42195.png", alt: "Boostlab" }],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Prize Kingdoms | Boostlab",
-    description,
-    images: [{ url: "/sites/boostlab/images/meta_image_0a45c42195.png", alt: "Boostlab" }],
-  },
+/** Our games as structured data, so search engines can show them as games. */
+const gamesList = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  name: "Games by Boostlab Game Studio",
+  itemListElement: gamesCarousel.cards.map((game, i) => ({
+    "@type": "ListItem",
+    position: i + 1,
+    item: {
+      "@type": "VideoGame",
+      name: game.title,
+      image: `${SITE_URL}${game.image.url}`,
+      ...(game.url ? { url: game.url, gamePlatform: "PC", applicationCategory: "Game" } : {}),
+      author: { "@id": `${SITE_URL}/#organization` },
+      publisher: { "@id": `${SITE_URL}/#organization` },
+    },
+  })),
 };
 
 export default function GamesPage() {
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLd(gamesList)} />
       <GamesHero />
       <Media
         label={gamesAbout.label}
         title={gamesAbout.title}
         description={gamesAbout.description}
         media={gamesAbout.media}
-        variation="LandscapeRightBottom"
       />
-      <ScrollFloat variant="gamesTabs" tabs={gamesTabs.tabs} />
       <CardCarousel />
-      <ScrollList />
       <CtaBlock
-        background={gamesCta.backgroundMedia}
         label={gamesCta.label}
         heading={gamesCta.heading}
-        downloadLinks={gamesCta.downloadLinks}
+        steamLink={gamesCta.steamLink}
       />
-      <ScrollAnim />
     </>
   );
 }

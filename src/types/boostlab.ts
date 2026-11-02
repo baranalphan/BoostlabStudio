@@ -10,44 +10,25 @@ export type CmsMedia = {
   url: string;
   width?: number | null;
   height?: number | null;
+  /** A short looping logo animation (a video standing in for a GIF), framed like a GIF. */
+  animation?: boolean;
 };
 
-export type MediaVariation =
-  | "LandscapeRight"
-  | "LandscapeCenter"
-  | "LandscapeRightBottom"
-  | "PortraitRight";
-
-export type CardVariant = "play" | "win" | "earn";
-
-export type TabVariant = "board" | "prize" | "reward" | "team";
-
 export type NewsItem = {
-  date: string;
+  /** ISO date; omitted for announcements that don't have a date yet. */
+  date?: string;
   title: string;
   description: string;
-  url: string;
+  /** Optional link; items without one are shown but not clickable. */
+  url?: string;
   image: CmsMedia;
 };
 
 export type CarouselCard = {
-  label: string;
   title: string;
+  /** Optional store page; the whole card links there. */
+  url?: string;
   image: CmsMedia;
-  video: CmsMedia;
-};
-
-export type ScrollListSection = {
-  title: string;
-  description: string;
-  sectionId: string;
-};
-
-export type GamesTab = {
-  label: string;
-  title: string;
-  description: string;
-  tabVariant: TabVariant;
 };
 
 export type DepartmentLink = {
@@ -56,8 +37,3 @@ export type DepartmentLink = {
   cta: CmsLink;
 };
 
-export type FaqItem = {
-  category: string;
-  question: string;
-  url: string;
-};

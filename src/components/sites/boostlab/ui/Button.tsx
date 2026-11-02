@@ -3,15 +3,7 @@ import { cn } from "@/lib/utils";
 import { ArrowIcon } from "../icons/ArrowIcon";
 import styles from "./Button.module.css";
 
-export type ButtonVariant =
-  | "primary"
-  | "secondary"
-  | "ghost"
-  | "tab"
-  | "simple"
-  | "simpleUnderline"
-  | "light"
-  | "simpleDark";
+type ButtonVariant = "secondary" | "ghost" | "simple" | "simpleUnderline";
 
 type CommonProps = {
   children: React.ReactNode;

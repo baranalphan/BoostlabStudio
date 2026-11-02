@@ -5,8 +5,8 @@ import { supportDepartments } from "../content";
 import styles from "./DepartmentLinks.module.css";
 
 /**
- * The source's ComponentBlocksDepartmentLinks: five bordered cards in the 12-column
- * grid — full width below 768px, half width to 1024px, a third above.
+ * The source's ComponentBlocksDepartmentLinks: bordered contact cards in the 12-column
+ * grid — full width below 768px, three side by side above.
  */
 export function DepartmentLinks() {
   return (
