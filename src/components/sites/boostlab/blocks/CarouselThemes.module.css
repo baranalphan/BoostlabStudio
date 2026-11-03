@@ -1,0 +1,231 @@
+/* ---- Scene stack: fills the whole "Our games" section behind everything ---- */
+
+.scenes {
+  position: absolute;
+  inset: 0;
+  z-index: -3;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/* Melts the top and bottom edges into the black sections around it. */
+.scenes::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    var(--boostlab-black) 0%,
+    transparent 22%,
+    transparent 82%,
+    var(--boostlab-black) 100%
+  );
+}
+
+.scene {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 1.4s ease;
+}
+
+.scene[data-on="true"] {
+  opacity: 1;
+}
+
+/*
+ * The painted backdrop of each theme (from scripts/build-theme-fx.mjs), in two layers:
+ *  - .photoFill: the same painting, heavily blurred and dimmed, covering the section, so
+ *    any margin around the painting reads as out-of-focus scenery rather than a gap;
+ *  - .photo: the painting itself, fitted to the section's width (as much of it as
+ *    possible shows; only a section much taller than the painting's proportions makes it
+ *    grow to cover 85% of the height), slightly softened, with a bloom on top.
+ * Phones get a centred portrait crop instead.
+ */
+.photoFill,
+.photo {
+  position: absolute;
+  background-image: var(--wide);
+  background-repeat: no-repeat;
+  background-position: 50% 45%;
+}
+
+.photoFill {
+  inset: -4rem;
+  background-size: cover;
+  filter: blur(14px) brightness(0.7) saturate(1.15);
+}
+
+.photo {
+  inset: 0;
+  background-size: auto max(calc(100vw / 1.79), 85%);
+  filter: blur(1.4px) saturate(1.1);
+}
+
+/* Bloom: a blurred, brightened copy screened over the painting, so its lights glow softly
+   into the dark around them. It inherits the painting's background, size and mask. */
+.photo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: inherit;
+  filter: blur(22px) brightness(1.35);
+  mix-blend-mode: screen;
+  opacity: 0.45;
+}
+
+@media (max-aspect-ratio: 4/5) {
+  .photoFill,
+  .photo {
+    background-image: var(--tall);
+  }
+
+  .photo {
+    background-size: cover;
+  }
+}
+
+/* ---- Idle Reef: inside an aquarium ---- */
+
+.reef {
+  --wide: url("/sites/boostlab/images/fx/reef/bg-wide.webp");
+  --tall: url("/sites/boostlab/images/fx/reef/bg-tall.webp");
+  background-color: #04213a;
+}
+
+/* Moving pools of light, the way sun ripples through water. */
+.reefCaustics {
+  position: absolute;
+  inset: -10%;
+  background:
+    radial-gradient(circle at 18% 32%, rgb(160 230 255 / 0.16), transparent 22%),
+    radial-gradient(circle at 78% 22%, rgb(160 230 255 / 0.13), transparent 20%),
+    radial-gradient(circle at 56% 62%, rgb(120 210 255 / 0.1), transparent 28%),
+    radial-gradient(circle at 34% 78%, rgb(120 210 255 / 0.08), transparent 22%);
+  mix-blend-mode: screen;
+  animation: caustics 15s ease-in-out infinite alternate;
+}
+
+@keyframes caustics {
+  to {
+    transform: translate(5%, 3%) scale(1.12);
+  }
+}
+
+/* ---- Pyramid Diggers: desert at sunset ---- */
+
+.desert {
+  --wide: url("/sites/boostlab/images/fx/desert/bg-wide.webp");
+  --tall: url("/sites/boostlab/images/fx/desert/bg-tall.webp");
+  background-color: #2a1208;
+}
+
+/* ---- Sins Simulator: crime city at night ---- */
+
+.city {
+  --wide: url("/sites/boostlab/images/fx/city/bg-wide.webp");
+  --tall: url("/sites/boostlab/images/fx/city/bg-tall.webp");
+  background-color: #05040a;
+}
+
+/* Neon signs bleeding colour into the rainy haze — with the odd flicker. */
+.neon {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(38% 34% at 14% 62%, rgb(255 40 140 / 0.28), transparent),
+    radial-gradient(36% 32% at 86% 56%, rgb(40 200 255 / 0.22), transparent),
+    radial-gradient(30% 24% at 50% 30%, rgb(150 60 255 / 0.12), transparent);
+  mix-blend-mode: screen;
+  animation: flicker 6s steps(1, end) infinite;
+}
+
+@keyframes flicker {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  41% {
+    opacity: 0.5;
+  }
+  42% {
+    opacity: 1;
+  }
+  44% {
+    opacity: 0.65;
+  }
+  45% {
+    opacity: 1;
+  }
+  78% {
+    opacity: 0.8;
+  }
+  79% {
+    opacity: 1;
+  }
+}
+
+/* Police lights washing up from the street, alternating red and blue. */
+.sirenRed,
+.sirenBlue {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 45%;
+  mix-blend-mode: screen;
+  animation: siren 1.3s ease-in-out infinite;
+}
+
+.sirenRed {
+  background: radial-gradient(35% 70% at 28% 100%, rgb(255 30 60 / 0.4), transparent 70%);
+}
+
+.sirenBlue {
+  background: radial-gradient(35% 70% at 72% 100%, rgb(40 90 255 / 0.45), transparent 70%);
+  animation-delay: -0.65s;
+}
+
+@keyframes siren {
+  0%,
+  35% {
+    opacity: 0.9;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+/* ---- Particle canvases ---- */
+
+.particlesBack,
+.particlesFront {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.particlesBack {
+  z-index: -2;
+}
+
+/* Above the ring's cards (they stack up to z-index 100) so things pass over the art. */
+.particlesFront {
+  z-index: 150;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scene {
+    transition: none;
+  }
+
+  .reefCaustics,
+  .neon,
+  .sirenRed,
+  .sirenBlue {
+    animation: none;
+  }
+}

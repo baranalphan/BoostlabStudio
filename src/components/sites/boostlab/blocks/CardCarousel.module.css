@@ -1,11 +1,27 @@
 .main {
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+
   position: relative;
   padding-top: var(--space-l);
   padding-bottom: var(--space-l);
   background-color: var(--boostlab-black);
   color: var(--dark-white);
   overflow: hidden;
+  isolation: isolate;
   z-index: 2;
+}
+
+/* Each game's accent, used by the progress bar below the ring. */
+.main[data-theme="reef"] {
+  --accent: #7fe3ff;
+}
+
+.main[data-theme="desert"] {
+  --accent: #ffc56b;
+}
+
+.main[data-theme="city"] {
+  --accent: #ff3d8b;
 }
 
 .titleWrapper {
@@ -15,7 +31,7 @@
   justify-content: center;
   text-align: center;
   gap: var(--space-m);
-  margin-bottom: var(--space-l);
+  margin-bottom: var(--space-m);
 }
 
 .title {
@@ -27,116 +43,341 @@
   letter-spacing: 0.07em;
 }
 
-.swiperWrapper {
-  width: 100%;
+/* ---- The arena: the 3D ring ---- */
+
+.arena {
   position: relative;
+  max-width: var(--container-max);
+  margin: 0 auto;
 }
 
-.swiperWrapper :global(.swiper) {
-  padding-left: var(--container-pad);
-  padding-right: var(--container-pad);
-}
+/*
+ * The stage. Cards are placed on a cylinder of radius --r: each one is pushed out by --r,
+ * turned by its angle (--a, set per frame by the component) and the whole ring is pulled
+ * back by --r so the front card sits at its natural size. The radius keeps neighbouring
+ * cards (34° apart) a hair apart: r = 1.12w / (2·tan 17°).
+ */
+.stage {
+  --w: min(62vw, 34rem);
+  --r: calc(var(--w) * 1.83);
 
-.swiperWrapper :global(.swiper-wrapper) {
-  perspective: 4000px;
-}
-
-@media (min-width: 77.5rem) {
-  .swiperWrapper :global(.swiper-wrapper) {
-    perspective: 200vw;
-  }
-}
-
-.swiperWrapper :global(.swiper) :global(.swiper-slide) {
+  position: relative;
+  height: calc(var(--w) * 1792 / 1496 + 9rem);
+  perspective: calc(var(--w) * 4.5);
+  perspective-origin: 50% 40%;
+  touch-action: pan-y;
   user-select: none;
-  /* Matches the game artwork (1496 × 1792) so it fills the card uncropped. */
-  aspect-ratio: 1496 / 1792;
-  transform: scale(0.7);
-  transition: transform 0.7s var(--ease-slide);
+  -webkit-user-select: none;
+  cursor: grab;
+  outline: none;
 }
 
-.swiperWrapper :global(.swiper) :global(.swiper-slide-active) {
-  transform: scale(1);
+.stage:active {
+  cursor: grabbing;
 }
 
-.face {
-  position: absolute;
-  inset: 0;
-  padding: var(--space-m);
+.stage:focus-visible {
+  outline: 2px solid var(--white);
+  outline-offset: 0.5rem;
   border-radius: var(--radius-l);
-  background-color: var(--boostlab-black);
-  overflow: hidden;
-}
-
-.faceInner {
-  position: relative;
-  height: 100%;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: start;
-  justify-content: end;
-  gap: var(--space-m);
 }
 
 @media (min-width: 48rem) {
-  .faceInner {
-    width: 75%;
+  .stage {
+    --w: clamp(22rem, 26vw, 46rem);
   }
+}
+
+/* A pool of light on the floor under the front card. */
+.stage::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: calc(var(--w) * 1.6);
+  height: 5rem;
+  transform: translateX(-50%);
+  background: radial-gradient(closest-side, rgb(255 255 255 / 0.14), transparent);
+  pointer-events: none;
+}
+
+/* Card frame: 1496 × 1792 (187:224). Videos dropped into `video` should match it. */
+.slot {
+  --a: 0;
+  --o: 0;
+  /* Hover: --lift (0–1) brings the front card forward, --dim darkens the shoved neighbours. */
+  --lift: 0;
+  --dim: 0;
+
+  position: absolute;
+  /* Headroom for the hovered card, which grows ~12% towards the viewer. */
+  top: 3.5rem;
+  left: calc(50% - var(--w) / 2);
+  width: var(--w);
+  aspect-ratio: 1496 / 1792;
+  transform: translateZ(calc(-1 * var(--r))) rotateY(calc(var(--a) * 1deg)) translateZ(var(--r))
+    translateZ(calc(var(--lift) * var(--w) * 0.5));
+  transform-style: preserve-3d;
+  /* Cards fade out before they turn edge-on (beyond ~2.6 places from the front). */
+  opacity: clamp(0, calc((2.6 - var(--o)) / 1.2), 1);
+}
+
+/* The flipper: front and back are glued back to back. */
+.turn {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  transition: transform 0.9s cubic-bezier(0.68, -0.35, 0.27, 1.3);
+}
+
+.faceFront,
+.faceBack {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-l);
+  overflow: hidden;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  container-type: inline-size;
+}
+
+.faceFront {
+  background-color: var(--boostlab-black);
+  box-shadow: 0 0 0 1px rgb(255 255 255 / 0.08);
+  transition: box-shadow 0.6s var(--ease-out);
+}
+
+.slot[data-front="true"] .faceFront {
+  box-shadow:
+    0 0 0 1px rgb(255 255 255 / calc(0.3 + var(--lift) * 0.3)),
+    0 calc(2.5rem + var(--lift) * 2rem) calc(5rem + var(--lift) * 4rem) -1.5rem rgb(0 0 0 / 0.9);
 }
 
 .faceMedia {
   position: absolute;
   inset: 0;
-}
-
-.faceMedia::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  opacity: 0.6;
-  background: linear-gradient(to bottom, transparent, var(--black));
-}
-
-.faceImage {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  pointer-events: none;
 }
 
-.itemTitle {
+/* Cards dim as they turn away from the front. */
+.shade {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background-color: var(--black);
+  opacity: calc(min(var(--o), 2) * 0.33 + var(--dim) * 0.35);
+  pointer-events: none;
+}
+
+/* ---- Back of the card: a spec sheet lit by its own art ---- */
+
+.faceBack {
+  transform: rotateY(180deg);
+  background-color: var(--boostlab-black);
+  box-shadow:
+    0 0 0 1px rgb(255 255 255 / 0.35),
+    0 2.5rem 5rem -1.5rem rgb(0 0 0 / 0.9);
+}
+
+.backArt {
+  position: absolute;
+  inset: -20%;
+  width: 140%;
+  height: 140%;
+  object-fit: cover;
+  filter: blur(28px) saturate(1.6) brightness(0.5);
+  pointer-events: none;
+}
+
+.backInner {
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 5cqi;
+  padding: 7cqi;
+}
+
+.backTop {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: min(var(--fs-cap), 4.2cqi);
+  line-height: 1;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  opacity: 0.75;
+}
+
+.backTitle {
+  margin-top: auto;
   font-family: var(--font-display);
   font-weight: 400;
   text-transform: uppercase;
-  font-size: var(--fs-h4);
+  font-size: 17cqi;
   line-height: 0.86;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.03em;
 }
 
-.paginationWrapper {
-  position: absolute;
-  top: 50%;
-  left: 0;
-  right: 0;
-  pointer-events: none;
-  display: none;
+.backMeta {
+  display: grid;
+  gap: 2.5cqi;
+  padding-top: 4cqi;
+  border-top: 1px solid rgb(255 255 255 / 0.25);
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: min(var(--fs-cap), 4.2cqi);
+  line-height: 1;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
-@media (min-width: 64rem) {
-  .paginationWrapper {
-    display: block;
+.backMeta div {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.backMeta dt {
+  opacity: 0.6;
+}
+
+.backCta {
+  align-self: flex-start;
+  padding: 3cqi 4.5cqi;
+  border-radius: 5rem;
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: min(var(--fs-cap), 4.2cqi);
+  line-height: 1;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border: 1px solid rgb(255 255 255 / 0.4);
+}
+
+.backCta[data-live="true"] {
+  color: var(--black);
+  background-color: var(--white);
+  border-color: var(--white);
+}
+
+/* The front card turns over on hover, on keyboard focus, or when tapped (no store link). */
+/* On hover it lifts first (driven by --lift), then turns over a beat later. */
+@media (hover: hover) and (pointer: fine) {
+  .slot[data-front="true"]:hover .turn {
+    transform: rotateY(180deg);
+    transition-delay: 0.18s;
   }
 }
 
-.pagination {
+.slot[data-front="true"]:focus-within .turn,
+.slot[data-flipped="true"] .turn {
+  transform: rotateY(180deg);
+}
+
+.slot:not([data-front="true"]) {
+  cursor: pointer;
+}
+
+/* Covers the whole card so it's clickable without changing the layout. */
+.cardLink {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  border-radius: var(--radius-l);
+  -webkit-user-drag: none;
+}
+
+.cardLink:focus-visible {
+  outline: 2px solid var(--white);
+  outline-offset: 4px;
+}
+
+/* ---- Controls: arrows, the front game's name and the autoplay timer ---- */
+
+.controls {
   display: flex;
-  gap: 0.5rem;
-  justify-content: space-between;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-top: var(--space-s);
   padding-left: var(--container-pad);
   padding-right: var(--container-pad);
 }
 
+.now {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  width: min(30rem, 100%);
+  min-width: 0;
+}
+
+.nowTitle {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: center;
+  font-family: var(--font-display);
+  font-weight: 400;
+  text-transform: uppercase;
+  font-size: var(--fs-h5);
+  line-height: 1;
+  letter-spacing: 0.05em;
+  animation: nowIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes nowIn {
+  from {
+    opacity: 0;
+    transform: translateY(0.6em);
+  }
+}
+
+.progress {
+  position: relative;
+  height: 2px;
+  background-color: rgb(255 255 255 / 0.18);
+  overflow: hidden;
+}
+
+/* Fills in the front game's theme colour until the ring moves on. */
+.progressFill {
+  position: absolute;
+  inset: 0;
+  background-color: var(--accent, var(--white));
+  transform-origin: left;
+  transform: scaleX(0);
+  animation: progress 4.5s linear forwards;
+  animation-play-state: paused;
+}
+
+.progressFill[data-running="true"] {
+  animation-play-state: running;
+}
+
+@keyframes progress {
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.hint {
+  margin-top: 1.4rem;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: var(--fs-cap);
+  line-height: 1;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  opacity: 0.45;
+}
+
 .paginationButton {
+  flex: none;
   width: 3.5rem;
   height: 3.5rem;
   display: flex;
@@ -146,8 +387,7 @@
   background-color: var(--dark-grey-2);
   border: 0.1rem solid var(--dark-grey-1);
   border-radius: 0.5rem;
-  pointer-events: all;
-  z-index: 1;
+  cursor: pointer;
   transition-property: background-color, color, border-color;
   transition-duration: 0.2s;
   transition-timing-function: var(--ease-slide);
@@ -159,6 +399,11 @@
   border-color: var(--white);
 }
 
+.paginationButton:focus-visible {
+  outline: 2px solid var(--white);
+  outline-offset: 2px;
+}
+
 .paginationIcon {
   display: block;
   width: 1rem;
@@ -168,10 +413,16 @@
   transform: scaleX(-1);
 }
 
-/* Covers the whole card so the artwork is clickable without changing the layout. */
-.cardLink {
-  position: absolute;
-  inset: 0;
-  z-index: 3;
-  border-radius: inherit;
+@media (prefers-reduced-motion: reduce) {
+  .turn {
+    transition: none;
+  }
+
+  .nowTitle {
+    animation: none;
+  }
+
+  .progress {
+    display: none;
+  }
 }

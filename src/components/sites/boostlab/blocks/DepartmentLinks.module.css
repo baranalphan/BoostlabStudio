@@ -61,3 +61,11 @@
     font-size: 1.75rem;
   }
 }
+
+/* The longest address (investor@) only just fits a tablet column, so the chips there
+   run a size down. --fs-cap is inherited by the button's label. */
+@media (min-width: 48rem) and (max-width: 63.99rem) {
+  .cta {
+    --fs-cap: 1.25rem;
+  }
+}

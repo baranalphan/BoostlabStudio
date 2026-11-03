@@ -24,7 +24,7 @@ export function DepartmentLinks() {
                 <SplitText>{item.description}</SplitText>
               </p>
               <Spacer size="l" />
-              <Button href={item.cta.url} variant="secondary">
+              <Button className={styles.cta} href={item.cta.url} variant="secondary">
                 {item.cta.label}
               </Button>
             </div>

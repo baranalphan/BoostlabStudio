@@ -1,7 +1,3 @@
-"use client";
-
-import Image from "next/image";
-import { useState } from "react";
 import { Container, Grid, Kicker } from "../ui/Layout";
 import { SplitText } from "../ui/SplitText";
 import { Reveal } from "../ui/Reveal";
@@ -19,8 +15,6 @@ function formatDate(iso?: string) {
 const NEWS: NewsItem[] = homeNews.news;
 
 export function NewsList() {
-  const [hovered, setHovered] = useState<number | null>(null);
-
   return (
     <section className={styles.main}>
       <Container className={styles.container}>
@@ -36,14 +30,7 @@ export function NewsList() {
         </Grid>
 
         <ul className={styles.list}>
-          {NEWS.map((item, i) => {
-            const hoverProps = {
-              className: styles.line,
-              onMouseEnter: () => setHovered(i),
-              onMouseLeave: () => setHovered((h) => (h === i ? null : h)),
-              onFocus: () => setHovered(i),
-              onBlur: () => setHovered((h) => (h === i ? null : h)),
-            };
+          {NEWS.map((item) => {
             const content = (
               <>
                 <span className={styles.cap}>{formatDate(item.date)}</span>
@@ -54,36 +41,17 @@ export function NewsList() {
             return (
               <li key={item.description} style={{ display: "contents" }}>
                 {item.url ? (
-                  <a {...hoverProps} href={item.url} target="_blank" rel="noreferrer noopener">
+                  <a className={styles.line} href={item.url} target="_blank" rel="noreferrer noopener">
                     {content}
                   </a>
                 ) : (
-                  <div {...hoverProps}>{content}</div>
+                  <div className={styles.line}>{content}</div>
                 )}
               </li>
             );
           })}
         </ul>
       </Container>
-
-      {NEWS.map((item, i) => (
-        <div
-          key={item.description}
-          className={styles.image}
-          data-shown={hovered === i ? "true" : "false"}
-          aria-hidden="true"
-        >
-          <div className={styles.imageInner}>
-            <Image
-              src={item.image.url}
-              alt=""
-              width={item.image.width ?? 900}
-              height={item.image.height ?? 900}
-              sizes="25vw"
-            />
-          </div>
-        </div>
-      ))}
     </section>
   );
 }

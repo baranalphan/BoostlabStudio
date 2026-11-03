@@ -176,6 +176,15 @@ body {
   color: var(--dark-white);
   background-color: var(--boostlab-black);
   overflow-x: hidden;
+  /* Short pages (e.g. Support) still push the footer to the bottom of the viewport. */
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+}
+
+#main {
+  flex: 1 0 auto;
 }
 
 body.disable-scroll {

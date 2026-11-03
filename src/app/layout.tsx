@@ -3,7 +3,6 @@ import "./globals.css";
 
 import { Header } from "@/components/sites/boostlab/layout/Header";
 import { Footer } from "@/components/sites/boostlab/layout/Footer";
-import { Cookies } from "@/components/sites/boostlab/layout/Cookies";
 import { SmoothScroll } from "@/components/sites/boostlab/layout/SmoothScroll";
 import {
   SITE_DESCRIPTION,
@@ -79,7 +78,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <body>
         <script type="application/ld+json" dangerouslySetInnerHTML={jsonLd(organization)} />
         <SmoothScroll />
-        <Cookies />
         <Header />
         <main id="main">{children}</main>
         <Footer />

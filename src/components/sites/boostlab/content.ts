@@ -30,11 +30,6 @@ export const header = {
   ] satisfies CmsLink[],
 };
 
-export const cookies = {
-  text: "This website uses cookies.",
-  moreButton: { label: "Learn More", url: "/privacy" } satisfies CmsLink,
-};
-
 /** Footer social icons. Links without a `url` are shown but not clickable yet. */
 export const footer = {
   copyright: "Boostlab Studio",
@@ -151,9 +146,9 @@ export const gamesHero = {
 
 export const gamesAbout = {
   label: "Boostlab Studio",
-  title: "Explore the worlds we build",
+  title: "Dive into the worlds we drop",
   description:
-    "We're a small, independent studio making the games we want to play. Every world we build starts as a crazy idea, gets shaped by our players and ships with its own personality. Different genres, different worlds, the same obsession with fun. This is just the beginning, and there are plenty more games on the way.",
+    "We're a small studio making our own rules. Every realm we build sparks from a wild idea, gets sculpted by our squad of players, and hits the scene with its own raw attitude. Different genres, different vibes, same obsession with pure fun. We're just getting warmed up, plenty more heavy hitters on the way.",
   media: {
     mime: "video/mp4",
     alt: "We are Boostlab",
@@ -169,6 +164,7 @@ export const gamesCarousel = {
   cards: [
     {
       title: "Sins Simulator",
+      theme: "city",
       image: {
         mime: "image/png",
         alt: "Sins Simulator",
@@ -179,6 +175,7 @@ export const gamesCarousel = {
     },
     {
       title: "Idle Reef",
+      theme: "reef",
       url: IDLE_REEF_STEAM,
       image: {
         mime: "image/jpeg",
@@ -190,6 +187,7 @@ export const gamesCarousel = {
     },
     {
       title: "Pyramid Diggers",
+      theme: "desert",
       image: {
         mime: "image/png",
         alt: "Pyramid Diggers",

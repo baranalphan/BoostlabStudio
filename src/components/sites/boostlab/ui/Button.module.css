@@ -143,4 +143,12 @@
 
 .label {
   display: inline-block;
+  /* Safety net: a label wider than its column (a long email) breaks instead of spilling. */
+  overflow-wrap: anywhere;
+}
+
+.main,
+.link,
+.content {
+  max-width: 100%;
 }
