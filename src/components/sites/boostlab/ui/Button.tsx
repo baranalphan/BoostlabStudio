@@ -25,6 +25,7 @@ type ButtonAsButton = CommonProps & {
   onClick?: () => void;
   active?: boolean;
   type?: "button" | "submit";
+  disabled?: boolean;
 };
 
 /**
@@ -86,6 +87,7 @@ export function Button(props: ButtonAsLink | ButtonAsButton) {
       type={buttonType ?? "button"}
       className={rootClass}
       onClick={props.onClick}
+      disabled={"disabled" in props ? props.disabled : undefined}
       data-active={props.active ? "true" : undefined}
       aria-pressed={props.active === undefined ? undefined : props.active}
     >

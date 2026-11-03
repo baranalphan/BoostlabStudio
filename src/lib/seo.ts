@@ -1,18 +1,13 @@
 import type { Metadata } from "next";
 
 /**
- * Site-wide SEO settings. Set NEXT_PUBLIC_SITE_URL to the production domain
- * (e.g. https://boostlab.studio) so canonical URLs, the sitemap and share cards point
- * at it. On Vercel the production domain is picked up automatically.
+ * Site-wide SEO settings. Canonical URLs, the sitemap and share cards all point at
+ * SITE_URL; NEXT_PUBLIC_SITE_URL overrides the live domain (e.g. for a staging copy).
  */
-export const SITE_URL = (
-  process.env.NEXT_PUBLIC_SITE_URL ??
-  (process.env.VERCEL_PROJECT_PRODUCTION_URL
-    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-    : process.env.VERCEL_URL
-      ? `https://${process.env.VERCEL_URL}`
-      : "http://localhost:3000")
-).replace(/\/$/, "");
+export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://boostlabgames.com").replace(
+  /\/$/,
+  "",
+);
 
 export const SITE_NAME = "Boostlab Game Studio";
 

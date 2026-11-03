@@ -42,9 +42,12 @@ export type CarouselCard = {
 /** Backdrop + particle scene per game: aquarium, desert sunset, crime city. */
 export type GameTheme = "reef" | "desert" | "city";
 
-export type DepartmentLink = {
-  title: string;
-  description: string;
-  cta: CmsLink;
+export type ContactField = "name" | "email" | "subject" | "message";
+
+export type ContactFormState = {
+  status: "idle" | "success" | "error";
+  /** What the visitor typed, handed back so a failed send doesn't wipe the form. */
+  values: Record<ContactField, string>;
+  errors?: Partial<Record<ContactField, string>>;
 };
 

@@ -7,7 +7,7 @@ import type {
   CarouselCard,
   CmsLink,
   CmsMedia,
-  DepartmentLink,
+  ContactField,
   NewsItem,
 } from "@/types/boostlab";
 
@@ -34,7 +34,7 @@ export const header = {
 export const footer = {
   copyright: "Boostlab Studio",
   socials: [
-    { label: "Instagram", icon: "instagram", url: "https://www.instagram.com/idlereef?rpxt=dm84OG10eHZnZDQ=" },
+    { label: "Instagram", icon: "instagram", url: "https://www.instagram.com/idlereef" },
     { label: "Steam", icon: "steam", url: "https://store.steampowered.com/curator/46610619" },
     { label: "LinkedIn", icon: "linkedin", url: "https://www.linkedin.com/company/boostlab-info/" },
     { label: "Discord", icon: "discord" },
@@ -215,22 +215,27 @@ export const supportHero = {
   title: "How can we help?",
 };
 
-export const supportDepartments = {
-  items: [
-    {
-      title: "For general",
-      description: "Connect with us.",
-      cta: { label: "info@boostlab.com", url: "mailto:info@boostlab.com" },
-    },
-    {
-      title: "For support",
-      description: "Need assistance? Reach out to our support team.",
-      cta: { label: "support@boostlab.com", url: "mailto:support@boostlab.com" },
-    },
-    {
-      title: "For investment",
-      description: "Unlock potential. Enquire about investment opportunities today.",
-      cta: { label: "investor@boostlab.com", url: "mailto:investor@boostlab.com" },
-    },
-  ] satisfies DepartmentLink[],
+export const supportContact = {
+  kicker: "Contact",
+  title: "Let's talk games",
+  description:
+    "Hit a bug, have feedback on one of our games or want to team up on what's next? Send us a message and our team will get back to you.",
+  topics: ["Player support", "Bug reports", "Feedback", "Business & press"],
+  emailLabel: "Or write to us directly",
+  email: "info@boostlabgames.com",
+  fields: {
+    name: { label: "Name Surname", placeholder: "John Doe" },
+    email: { label: "Email", placeholder: "you@example.com" },
+    subject: { label: "Subject", placeholder: "What is it about?" },
+    message: { label: "Message", placeholder: "Tell us how we can help." },
+  } satisfies Record<ContactField, { label: string; placeholder: string }>,
+  /** Max characters per field, enforced in the browser and again by the Server Action. */
+  limits: { name: 100, email: 200, subject: 150, message: 5000 } satisfies Record<
+    ContactField,
+    number
+  >,
+  submit: "Send message",
+  sending: "Sending…",
+  success: "Thanks! Your message has been sent. We'll get back to you soon.",
+  error: "Something went wrong and your message wasn't sent. Please try again.",
 };

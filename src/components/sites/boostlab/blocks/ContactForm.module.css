@@ -1,0 +1,249 @@
+.main {
+  position: relative;
+  z-index: 2;
+  background-color: var(--boostlab-black);
+}
+
+/* One bordered card in the 12-column grid: intro and form stacked below 768px, the intro
+   taking four columns and the form eight above. */
+.card {
+  grid-row-gap: var(--space-m);
+  padding: var(--space-m);
+  border: 1px solid var(--dark-grey-1);
+  border-radius: var(--radius-l);
+}
+
+.intro,
+.form {
+  grid-column: 1 / -1;
+  min-width: 0;
+}
+
+@media (min-width: 48rem) {
+  .intro {
+    grid-column: span 4;
+  }
+
+  .form {
+    grid-column: span 8;
+  }
+}
+
+.intro {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+/* From tablet up the intro becomes its own panel beside the form: a hairline divider on
+   its right, and the direct-email block dropped to the bottom edge. */
+@media (min-width: 48rem) {
+  .intro {
+    padding-right: var(--space-m);
+    border-right: 1px solid var(--dark-grey-1);
+  }
+}
+
+.kicker {
+  color: var(--overdrive-blue);
+}
+
+.topics {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+/* Static tags in the button chips' mono caps, at the same type size as the buttons. */
+.topic {
+  padding: 0.7rem 0.9rem;
+  font-family: var(--font-mono);
+  font-weight: 500;
+  text-transform: uppercase;
+  font-size: var(--fs-cap);
+  line-height: 1;
+  letter-spacing: -0.007em;
+  color: rgb(255 255 255 / 0.85);
+  background-color: var(--dark-grey-2);
+  border: 1px solid var(--dark-grey-1);
+  border-radius: 0.5rem;
+}
+
+.direct {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  width: 100%;
+  margin-top: var(--space-m);
+  padding-top: var(--space-m);
+  border-top: 1px solid var(--dark-grey-1);
+}
+
+@media (min-width: 48rem) {
+  .direct {
+    margin-top: auto;
+  }
+
+  /* Keeps a gap above the email block when the form is short and the column tight. */
+  .topics {
+    margin-bottom: var(--space-m);
+  }
+}
+
+.title {
+  font-family: var(--font-display);
+  font-weight: 400;
+  text-transform: uppercase;
+  font-size: var(--fs-h4);
+  line-height: 0.86;
+  letter-spacing: 0.05em;
+}
+
+.description {
+  max-width: 30ch;
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: var(--fs-body);
+  line-height: 1.33;
+  letter-spacing: 0.01em;
+  color: rgb(255 255 255 / 0.3);
+}
+
+.mail {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  text-transform: uppercase;
+  font-size: var(--fs-cap);
+  line-height: 1;
+  letter-spacing: -0.007em;
+  color: var(--dark-white);
+  text-decoration: none;
+  overflow-wrap: anywhere;
+  transition: color 0.3s var(--ease-slide);
+}
+
+.mail:hover,
+.mail:focus-visible {
+  color: rgb(255 255 255 / 0.6);
+}
+
+/* Name and email side by side from tablet up; subject, message and the button full width. */
+.form {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem var(--space-s);
+}
+
+@media (min-width: 48rem) {
+  .form {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .full {
+    grid-column: 1 / -1;
+  }
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  min-width: 0;
+}
+
+/* Labels use the button chips' mono caps so the form reads as part of the same kit. */
+.label {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  text-transform: uppercase;
+  font-size: var(--fs-cap);
+  line-height: 1;
+  letter-spacing: -0.007em;
+  color: rgb(255 255 255 / 0.5);
+}
+
+.input {
+  width: 100%;
+  min-height: 3.3rem;
+  padding: 0.85rem 0.9rem;
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: var(--fs-body);
+  line-height: 1.33;
+  letter-spacing: 0.01em;
+  color: var(--dark-white);
+  background-color: var(--dark-grey-2);
+  border: 0.1rem solid var(--dark-grey-1);
+  border-radius: 0.5rem;
+  outline: none;
+  transition: border-color 0.3s var(--ease-slide);
+}
+
+.input::placeholder {
+  color: rgb(255 255 255 / 0.3);
+}
+
+.input:hover {
+  border-color: rgb(255 255 255 / 0.3);
+}
+
+.input:focus-visible {
+  border-color: var(--white);
+}
+
+.input[aria-invalid="true"] {
+  border-color: var(--prize-purple);
+}
+
+.textarea {
+  min-height: 10rem;
+  resize: vertical;
+}
+
+.error {
+  font-family: var(--font-body);
+  font-size: var(--fs-cap);
+  line-height: 1.2;
+  color: var(--prize-purple);
+}
+
+.footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-s) 1.5rem;
+  padding-top: 0.5rem;
+}
+
+.status {
+  flex: 1 1 16rem;
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  line-height: 1.33;
+  letter-spacing: 0.01em;
+  color: rgb(255 255 255 / 0.6);
+}
+
+.status[data-status="error"] {
+  color: var(--prize-purple);
+}
+
+.honeypot {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+@media (min-width: 48rem) and (max-width: 63.99rem) {
+  .card {
+    padding: 1.25rem;
+  }
+
+  .title {
+    font-size: 1.75rem;
+  }
+}

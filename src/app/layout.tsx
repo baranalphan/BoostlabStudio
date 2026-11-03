@@ -57,7 +57,7 @@ const organization = {
       alternateName: "Boostlab Studio",
       url: SITE_URL,
       logo: `${SITE_URL}/icon.png`,
-      email: "info@boostlab.com",
+      email: "info@boostlabgames.com",
       sameAs: Object.values(SOCIAL_LINKS),
     },
     {

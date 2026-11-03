@@ -1,0 +1,7 @@
+/* The page fills at least one screen: the heading takes the free space in the middle
+   and the contact cards sit at the bottom, just above the footer. */
+.page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100svh;
+}

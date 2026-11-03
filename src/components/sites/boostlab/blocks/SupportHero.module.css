@@ -1,4 +1,9 @@
+/* Grows into the space left above the contact cards and centres the heading in it. */
 .wrapper {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 100%;
   padding: var(--space-m) calc(var(--container-pad) * 2) 0;
   background-color: var(--boostlab-black);
@@ -10,6 +15,7 @@
   font-family: var(--font-display);
   font-weight: 400;
   text-transform: uppercase;
+  text-align: center;
   font-size: var(--fs-h1);
   line-height: 0.88;
   letter-spacing: 0.03em;

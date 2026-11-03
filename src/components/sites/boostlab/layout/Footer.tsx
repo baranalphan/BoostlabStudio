@@ -1,3 +1,5 @@
+import Image from "next/image";
+import Link from "next/link";
 import { Container } from "../ui/Layout";
 import { SteamIcon } from "../icons/SteamIcon";
 import { DiscordIcon, InstagramIcon, LinkedInIcon } from "../icons/SocialIcons";
@@ -11,12 +13,21 @@ const ICONS = {
   discord: DiscordIcon,
 };
 
-/** A slim white footer: the copyright on the left, round social icon buttons on the right
- *  (stacked and centred on small screens). */
+/** A slim white footer: the copyright on the left, the outlined flask mark in the centre and
+ *  round social icon buttons on the right (stacked and centred on small screens). */
 export function Footer() {
   return (
     <footer className={styles.main}>
       <Container className={styles.container}>
+        <Link href="/" aria-label="Boostlab home" className={styles.logo}>
+          <Image
+            src="/sites/boostlab/images/boost-black-outline.png"
+            alt=""
+            width={216}
+            height={240}
+            className={styles.logoImage}
+          />
+        </Link>
         <p className={styles.copyright}>
           © {new Date().getFullYear()} {footer.copyright}
         </p>

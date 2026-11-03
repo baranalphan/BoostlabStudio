@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { Spacer } from "@/components/sites/boostlab/ui/Layout";
 import { SupportHero } from "@/components/sites/boostlab/blocks/SupportHero";
-import { DepartmentLinks } from "@/components/sites/boostlab/blocks/DepartmentLinks";
+import { ContactForm } from "@/components/sites/boostlab/blocks/ContactForm";
 import { pageMetadata } from "@/lib/seo";
+import styles from "./page.module.css";
 
 export const metadata: Metadata = pageMetadata({
   title: "Support",
@@ -13,11 +14,11 @@ export const metadata: Metadata = pageMetadata({
 
 export default function SupportPage() {
   return (
-    <>
+    <div className={styles.page}>
       {/* Clears the fixed header — the source opens this page with a 10rem spacer. */}
       <Spacer size="10rem" />
       <SupportHero />
-      <DepartmentLinks />
-    </>
+      <ContactForm />
+    </div>
   );
 }
