@@ -2,13 +2,13 @@ import { Kicker, Spacer } from "../ui/Layout";
 import { SplitText } from "../ui/SplitText";
 import { Reveal } from "../ui/Reveal";
 import { SteamIcon } from "../icons/SteamIcon";
-import type { CmsLink } from "@/types/boostlab";
+import type { SiteLink } from "@/types/boostlab";
 import styles from "./CtaBlock.module.css";
 
 type CtaBlockProps = {
   heading: string;
   label?: string;
-  steamLink?: CmsLink;
+  steamLink?: SiteLink;
 };
 
 /** The games page's closing panel: plain black, with the heading and a Steam button
@@ -27,15 +27,17 @@ export function CtaBlock({ heading, label, steamLink }: CtaBlockProps) {
             <SplitText>{heading}</SplitText>
           </h2>
           {steamLink ? (
-            <a
-              className={styles.steamButton}
-              href={steamLink.url}
-              target={steamLink.newTab ? "_blank" : undefined}
-              rel={steamLink.newTab ? "noreferrer noopener" : undefined}
-            >
-              <SteamIcon className={styles.steamIcon} />
-              <span>{steamLink.label}</span>
-            </a>
+            <Reveal delay={0.2}>
+              <a
+                className={styles.steamButton}
+                href={steamLink.url}
+                target={steamLink.newTab ? "_blank" : undefined}
+                rel={steamLink.newTab ? "noreferrer noopener" : undefined}
+              >
+                <SteamIcon className={styles.steamIcon} />
+                <span>{steamLink.label}</span>
+              </a>
+            </Reveal>
           ) : null}
         </div>
       </div>

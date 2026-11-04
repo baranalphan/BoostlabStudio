@@ -1,17 +1,15 @@
-export type CmsLink = {
+export type SiteLink = {
   label: string;
   url: string;
   newTab?: boolean | null;
 };
 
-export type CmsMedia = {
+export type SiteMedia = {
   mime: string;
   alt: string | null;
   url: string;
   width?: number | null;
   height?: number | null;
-  /** A short looping logo animation (a video standing in for a GIF), framed like a GIF. */
-  animation?: boolean;
 };
 
 export type NewsItem = {
@@ -21,22 +19,46 @@ export type NewsItem = {
   description: string;
   /** Optional link; items without one are shown but not clickable. */
   url?: string;
-  image: CmsMedia;
 };
 
-export type CarouselCard = {
+export type ShowreelGame = {
   title: string;
-  /** Optional store page; the whole card links there. */
-  url?: string;
-  /** Doubles as the video poster and lights the back of the card. */
-  image: CmsMedia;
+  /** Tints the progress light, the selected tile's glow and the light behind the video. */
+  accent: string;
+  /** The backdrop and particles the games page's stage turns into while this game is on. */
+  theme: GameTheme;
+  /** Shown until the video loads, and on its own while there is no video yet. */
+  poster: SiteMedia;
   /**
-   * Optional looping clip that replaces the still. The card frame is 1496 × 1792
-   * (187:224, just under 5:6) — export at that size, or 1080 × 1294 for a lighter file.
+   * The game's tile in the picker. A full square image fills the tile; a cut-out
+   * (`cutout: true`) sits whole on a dark ground tinted with the game's accent.
+   */
+  icon: { url: string; cutout?: boolean };
+  /**
+   * Optional gameplay clip. The stage is 16:9: export at 1920 × 1080 (or 1280 × 720),
+   * H.264 MP4, 10–20 seconds, ideally under 8 MB.
    */
   video?: string;
-  /** The scene the "Our games" section turns into while this game is in front. */
-  theme?: GameTheme;
+  /**
+   * Scale for a clip with black bars baked in, so the picture fills the 16:9 stage (the
+   * sides crop a little in exchange). For bars of b px on a clip h px tall: h / (h - 2b).
+   */
+  videoZoom?: number;
+
+  /* ---- "Our games": each game's chapter in the scroll journey ---- */
+
+  /** One punchy line under the game's name. */
+  tagline: string;
+  /** Two sentences about the game. */
+  blurb: string;
+  /** Short labels: genre, hook. */
+  tags: string[];
+  /** Store page, linked from the chapter. */
+  url?: string;
+  /** Transparent wordmark shown as the chapter title; without one the name is set in type. */
+  logo?: { url: string; width: number; height: number };
+  /** 16:9 stills (two or three) from the game. Without them the chapter shows the poster. */
+  shots?: string[];
 };
 
 /** Backdrop + particle scene per game: aquarium, desert sunset, crime city. */

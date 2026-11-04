@@ -1,33 +1,28 @@
-import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { Container, Kicker, Spacer } from "../ui/Layout";
 import { SplitText } from "../ui/SplitText";
 import { Reveal } from "../ui/Reveal";
-import type { CmsMedia } from "@/types/boostlab";
+import type { SiteMedia } from "@/types/boostlab";
 import styles from "./Media.module.css";
 
 /**
- * The source's ComponentBlocksMedia. Text and a perspective-tilted media card sit side
- * by side, centred as one unit.
+ * Text and a perspective-tilted video card sit side by side, centred as one unit.
  */
 export function Media({
   label,
   title,
   description,
   media,
+  headingLevel: Heading = "h2",
 }: {
   label?: string;
   title: string;
   description?: string;
-  media: CmsMedia;
+  /** A looping video; the card takes its aspect ratio, so nothing is cut off. */
+  media: SiteMedia & { width: number; height: number };
+  /** h1 when the block opens the page (games), so the page keeps a single main heading. */
+  headingLevel?: "h1" | "h2";
 }) {
-  const isVideo = media.mime.startsWith("video");
-  // GIFs and looping logo animations share the same framed, uncropped treatment.
-  const isGif = media.url.endsWith(".gif") || Boolean(media.animation);
-  // Other videos get a card in the video's own aspect ratio instead of the 1.5:1 crop,
-  // so nothing is cut off.
-  const ownRatio = isVideo && !isGif && media.width && media.height;
-
   return (
     <section className={styles.main}>
       <Container className={cn(styles.container, styles.landscapeRight)}>
@@ -38,56 +33,38 @@ export function Media({
             </Reveal>
           ) : null}
           <Spacer size="m" />
-          <h2 className={styles.title}>
+          <Heading className={styles.title}>
             <SplitText>{title}</SplitText>
-          </h2>
+          </Heading>
           {description ? (
             <>
               <Spacer size="m" />
-              <Reveal delay={0.2}>
-                <p className={styles.body}>{description}</p>
-              </Reveal>
+              {/* The body rises in line by line right behind the title, on a tight stagger. */}
+              <p className={styles.body}>
+                <SplitText delay={0.15} lineStagger={0.04} className={styles.bodyLines}>
+                  {description}
+                </SplitText>
+              </p>
             </>
           ) : null}
         </div>
 
         <div
-          className={cn(styles.imageWrapper, isGif && styles.gifWrapper, ownRatio && styles.ratioWrapper)}
-          style={
-            ownRatio
-              ? ({ "--media-ratio": `${media.width} / ${media.height}` } as React.CSSProperties)
-              : undefined
-          }
+          className={cn(styles.imageWrapper, styles.ratioWrapper)}
+          style={{ "--media-ratio": `${media.width} / ${media.height}` } as React.CSSProperties}
         >
           <div className={cn(styles.mediaOuter, styles.perspective)}>
             <div className={styles.mediaInner}>
-              <div
-                className={cn(
-                  styles.mediaFill,
-                  !isGif && !ownRatio && styles.scaleUp,
-                  isGif && styles.mediaFillGif
-                )}
-              >
-                {isVideo ? (
-                  <video
-                    src={media.url}
-                    autoPlay
-                    muted
-                    loop
-                    playsInline
-                    preload="metadata"
-                    aria-label={media.alt ?? undefined}
-                  />
-                ) : (
-                  <Image
-                    src={media.url}
-                    alt={media.alt ?? ""}
-                    width={media.width ?? 1600}
-                    height={media.height ?? 1200}
-                    sizes="(max-width: 1024px) 100vw, 70vw"
-                    unoptimized={media.url.endsWith(".gif")}
-                  />
-                )}
+              <div className={styles.mediaFill}>
+                <video
+                  src={media.url}
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  preload="metadata"
+                  aria-label={media.alt ?? undefined}
+                />
               </div>
             </div>
           </div>

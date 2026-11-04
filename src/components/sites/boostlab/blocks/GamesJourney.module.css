@@ -1,0 +1,395 @@
+/* Transparent: the games page's shared backdrop (GamesStage) shows through. */
+.main {
+  position: relative;
+  color: var(--dark-white);
+}
+
+/* ---- intro: the section heading, before the journey pins ---- */
+
+.intro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-m);
+  padding-top: var(--space-l);
+  padding-bottom: var(--space-m);
+  text-align: center;
+  text-shadow: 0 0.2rem 1.6rem rgb(0 0 0 / 0.55);
+}
+
+/* The heading's shadow is a filter on the whole heading instead: SplitText clips each
+   line to its box, which cut a text-shadow off in a hard line under the title. */
+.title {
+  text-shadow: none;
+  font-family: var(--font-display);
+  font-weight: 400;
+  text-transform: uppercase;
+  font-size: var(--fs-h2);
+  line-height: 0.87;
+  letter-spacing: 0.04em;
+  filter: drop-shadow(0 0.2rem 1.2rem rgb(0 0 0 / 0.5));
+}
+
+.hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--font-mono);
+  font-weight: 500;
+  text-transform: uppercase;
+  font-size: var(--fs-cap);
+  line-height: 1;
+  letter-spacing: 0.12em;
+  opacity: 0.8;
+}
+
+.hintArrow {
+  display: inline-block;
+  animation: nudge 1.6s ease-in-out infinite;
+}
+
+@keyframes nudge {
+  50% {
+    transform: translateY(0.35rem);
+  }
+}
+
+/* ---- the track: one screen of scrolling per game, with the stage pinned inside ---- */
+
+/* One screen of scrolling per game: the first while the stage slides up into view, the
+   rest while it is pinned. */
+.track {
+  position: relative;
+  height: calc(var(--n) * 100vh);
+  height: calc(var(--n) * 100svh);
+}
+
+/* Not clipped: the glow behind a chapter's stills would otherwise end in a hard line at
+   the top of the pin while it is still coming up the screen. */
+.pin {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+}
+
+/* ---- a chapter: copy and stills for one game ---- */
+
+.chapter {
+  --pad-x: max(var(--container-pad), calc((100% - var(--container-max)) / 2 + var(--container-pad)));
+
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-content: center;
+  row-gap: 1.4rem;
+  /* Clear of the fixed header above. */
+  padding: 5.5rem var(--pad-x) 2.5rem;
+  visibility: hidden;
+  pointer-events: none;
+  transition: visibility 0s linear 0.8s;
+}
+
+.chapter[data-state="current"] {
+  visibility: visible;
+  pointer-events: auto;
+  transition: none;
+}
+
+@media (min-width: 64rem) {
+  .chapter {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    align-items: center;
+    column-gap: var(--space-l);
+    padding: 6rem var(--pad-x) 4rem;
+  }
+}
+
+/* Copy rises in line by line; a chapter left behind slides up, the next waits below. */
+.copy {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.8rem;
+  text-shadow: 0 0.1rem 1rem rgb(0 0 0 / 0.55);
+}
+
+@media (min-width: 64rem) {
+  .copy {
+    gap: 1.1rem;
+  }
+}
+
+.copy > * {
+  opacity: 0;
+  transform: translateY(2.5rem);
+  transition:
+    opacity 0.5s var(--ease-split),
+    transform 0.8s var(--ease-split);
+}
+
+.chapter[data-state="past"] .copy > * {
+  transform: translateY(-2.5rem);
+}
+
+.chapter[data-state="current"] .copy > * {
+  opacity: 1;
+  transform: none;
+}
+
+/* The tagline and blurb rise line by line instead (SplitText), so the paragraphs
+   themselves stay put. */
+.chapter[data-state] .copy > .tagline,
+.chapter[data-state] .copy > .blurb {
+  opacity: 1;
+  transform: none;
+}
+
+.chapter[data-state="current"] .copy > :nth-child(2) {
+  transition-delay: 0.05s;
+}
+
+.chapter[data-state="current"] .copy > :nth-child(3) {
+  transition-delay: 0.1s;
+}
+
+.chapter[data-state="current"] .copy > :nth-child(4) {
+  transition-delay: 0.15s;
+}
+
+.chapter[data-state="current"] .copy > :nth-child(5) {
+  transition-delay: 0.2s;
+}
+
+.chapter[data-state="current"] .copy > :nth-child(6) {
+  transition-delay: 0.25s;
+}
+
+.heading {
+  line-height: 0;
+}
+
+/* Phones stack the stills above the copy, so the logo stays modest there; desktop has the
+   whole column for it. */
+.logo {
+  width: auto;
+  height: clamp(4rem, 11svh, 6.5rem);
+  max-width: 100%;
+  object-fit: contain;
+  object-position: left center;
+  filter: drop-shadow(0 0.6rem 1.4rem rgb(0 0 0 / 0.5));
+}
+
+@media (min-width: 64rem) {
+  .logo {
+    height: clamp(6rem, 20svh, 14rem);
+  }
+}
+
+/* A game without a transparent wordmark gets its name set large, lit in its colour. */
+.wordmark {
+  display: block;
+  font-family: var(--font-display);
+  font-weight: 400;
+  text-transform: uppercase;
+  font-size: var(--fs-h3);
+  line-height: 0.88;
+  letter-spacing: 0.05em;
+  color: var(--white, #fff);
+  text-shadow:
+    0 0 1.6rem color-mix(in srgb, var(--accent) 65%, transparent),
+    0 0.2rem 1rem rgb(0 0 0 / 0.6);
+}
+
+@media (min-width: 64rem) {
+  .wordmark {
+    font-size: var(--fs-h2);
+  }
+}
+
+.tagline {
+  font-family: var(--font-display);
+  font-weight: 400;
+  text-transform: uppercase;
+  font-size: calc(var(--fs-h5) * 1.35);
+  line-height: 1.05;
+  letter-spacing: 0.06em;
+}
+
+.blurb {
+  max-width: 42ch;
+  font-family: var(--font-body);
+  font-size: calc(var(--fs-body) * 1.2);
+  line-height: 1.4;
+  color: rgb(250 251 253 / 0.88);
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  list-style: none;
+}
+
+.tags li {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  line-height: 1;
+  letter-spacing: 0.08em;
+  padding: 0.5rem 0.75rem;
+  border-radius: 5rem;
+  border: 1px solid rgb(255 255 255 / 0.28);
+  background-color: rgb(0 0 0 / 0.35);
+  backdrop-filter: blur(8px);
+  text-shadow: none;
+}
+
+.cta {
+  margin-top: 0.4rem;
+}
+
+/* ---- stills: a main shot with two smaller ones overlapping it, each drifting at
+   its own speed as the chapter scrolls (--cp, 0–1) ---- */
+
+.visual {
+  position: relative;
+  order: -1;
+  justify-self: center;
+  width: min(100%, calc(30svh * 16 / 11));
+  aspect-ratio: 16 / 11;
+}
+
+@media (min-width: 64rem) {
+  .visual {
+    order: 0;
+    width: min(100%, calc(72svh * 16 / 11));
+  }
+}
+
+/* The game's light pooling behind its stills. */
+.visual::before {
+  content: "";
+  position: absolute;
+  inset: 10%;
+  border-radius: 50%;
+  background-color: var(--accent);
+  filter: blur(80px);
+  opacity: 0.1;
+}
+
+.shot,
+.poster {
+  --drift: 3rem;
+
+  position: absolute;
+  overflow: hidden;
+  border-radius: var(--radius-l);
+  background-color: #0b0b0c;
+  box-shadow:
+    0 0 0 1px rgb(255 255 255 / 0.14),
+    0 2rem 3.5rem -1.5rem rgb(0 0 0 / 0.85);
+  opacity: 0;
+  transform: translateY(4rem) scale(0.94);
+  translate: 0 calc((0.5 - var(--cp, 0.5)) * var(--drift));
+  transition:
+    opacity 0.7s var(--ease-split),
+    transform 1s var(--ease-split);
+}
+
+.chapter[data-state="past"] .shot,
+.chapter[data-state="past"] .poster {
+  transform: translateY(-4rem) scale(0.94);
+}
+
+.chapter[data-state="current"] .shot,
+.chapter[data-state="current"] .poster {
+  opacity: 1;
+  transform: none;
+}
+
+.shot img,
+.poster img {
+  object-fit: cover;
+}
+
+.shot[data-k="0"] {
+  z-index: 2;
+  left: 9%;
+  top: 14%;
+  width: 78%;
+  aspect-ratio: 16 / 9;
+}
+
+.shot[data-k="1"] {
+  --drift: 7rem;
+
+  z-index: 3;
+  left: 0;
+  top: 2%;
+  width: 36%;
+  aspect-ratio: 16 / 9;
+  transition-delay: 0.08s;
+}
+
+.shot[data-k="2"] {
+  --drift: 11rem;
+
+  z-index: 3;
+  right: 0;
+  bottom: 4%;
+  width: 40%;
+  aspect-ratio: 16 / 9;
+  transition-delay: 0.16s;
+}
+
+/* With only two stills, the second sits over the main shot's lower right. */
+.visual[data-shots="2"] .shot[data-k="1"] {
+  --drift: 9rem;
+
+  left: auto;
+  top: auto;
+  right: 0;
+  bottom: 4%;
+  width: 42%;
+}
+
+/* Smaller stills get a thin light rim, like prints laid over the main shot. */
+.shot[data-k="1"],
+.shot[data-k="2"] {
+  box-shadow:
+    0 0 0 2px rgb(255 255 255 / 0.75),
+    0 1.6rem 3rem -1rem rgb(0 0 0 / 0.85);
+}
+
+/* A game without stills shows its key art as one tall card. */
+.poster {
+  inset: 0;
+  margin: auto;
+  height: 100%;
+  aspect-ratio: 1496 / 1792;
+}
+
+/* Short phone screens: the blurb gives way so the rest still fits. */
+@media (max-width: 63.999rem) and (max-height: 44rem) {
+  .blurb {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hintArrow {
+    animation: none;
+  }
+
+  .copy > *,
+  .shot,
+  .poster {
+    transition: opacity 0.3s linear;
+    transform: none !important;
+    translate: none;
+  }
+}

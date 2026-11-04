@@ -7,6 +7,7 @@ import type { ContactField, ContactFormState } from "@/types/boostlab";
 import { Container, Grid, Kicker, Spacer } from "../ui/Layout";
 import { Button } from "../ui/Button";
 import { SplitText } from "../ui/SplitText";
+import { Reveal } from "../ui/Reveal";
 import { supportContact } from "../content";
 import styles from "./ContactForm.module.css";
 
@@ -40,7 +41,7 @@ export function ContactForm() {
     return (
       <div className={cn(styles.field, className)}>
         <label className={styles.label} htmlFor={id}>
-          {fields[name].label}
+          <Reveal mode="slide">{fields[name].label}</Reveal>
         </label>
         {name === "message" ? (
           <textarea className={cn(styles.input, styles.textarea)} rows={6} {...shared} />
@@ -67,7 +68,9 @@ export function ContactForm() {
       <Container>
         <Grid className={styles.card}>
           <div className={styles.intro}>
-            <Kicker className={styles.kicker}>{supportContact.kicker}</Kicker>
+            <Reveal>
+              <Kicker className={styles.kicker}>{supportContact.kicker}</Kicker>
+            </Reveal>
             <Spacer size="m" />
             <h2 className={styles.title}>
               <SplitText>{supportContact.title}</SplitText>
@@ -78,19 +81,26 @@ export function ContactForm() {
             </p>
             <Spacer size="m" />
             <ul className={styles.topics}>
-              {supportContact.topics.map((topic) => (
-                <li className={styles.topic} key={topic}>
-                  {topic}
+              {/* The chips rise in one after another. */}
+              {supportContact.topics.map((topic, i) => (
+                <li key={topic}>
+                  <Reveal mode="slide" delay={0.15 + i * 0.06}>
+                    <span className={styles.topic}>{topic}</span>
+                  </Reveal>
                 </li>
               ))}
             </ul>
 
             {/* Pinned to the bottom of the column so it lines up with the send button. */}
             <div className={styles.direct}>
-              <p className={styles.label}>{supportContact.emailLabel}</p>
-              <a className={styles.mail} href={`mailto:${supportContact.email}`}>
-                {supportContact.email}
-              </a>
+              <Reveal mode="slide">
+                <p className={styles.label}>{supportContact.emailLabel}</p>
+              </Reveal>
+              <Reveal mode="slide" delay={0.08}>
+                <a className={styles.mail} href={`mailto:${supportContact.email}`}>
+                  {supportContact.email}
+                </a>
+              </Reveal>
             </div>
           </div>
 
@@ -111,9 +121,11 @@ export function ContactForm() {
             />
 
             <div className={cn(styles.footer, styles.full)}>
-              <Button type="submit" variant="secondary" disabled={pending}>
-                {pending ? supportContact.sending : supportContact.submit}
-              </Button>
+              <Reveal>
+                <Button type="submit" variant="secondary" disabled={pending}>
+                  {pending ? supportContact.sending : supportContact.submit}
+                </Button>
+              </Reveal>
               <p
                 className={styles.status}
                 data-status={state.status}

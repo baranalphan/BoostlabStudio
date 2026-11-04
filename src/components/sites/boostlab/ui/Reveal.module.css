@@ -30,6 +30,22 @@
   opacity: 1;
 }
 
+/* The slide's motion without its clip: content rises a short way as it fades in. */
+.rise {
+  display: block;
+  transform: translateY(1.5rem);
+  opacity: 0;
+  transition-property: transform, opacity;
+  transition-duration: 0.8s;
+  transition-timing-function: var(--ease-slide);
+  transition-delay: var(--delay, 0s);
+}
+
+.wrapper[data-shown="true"] .rise {
+  transform: none;
+  opacity: 1;
+}
+
 .clip {
   display: block;
   overflow: hidden;

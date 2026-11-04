@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 import { ArrowIcon } from "../icons/ArrowIcon";
 import styles from "./Button.module.css";
 
-type ButtonVariant = "secondary" | "ghost" | "simple" | "simpleUnderline";
+type ButtonVariant = "secondary" | "ghost";
 
 type CommonProps = {
   children: React.ReactNode;
@@ -29,7 +29,7 @@ type ButtonAsButton = CommonProps & {
 };
 
 /**
- * The source's button renders its label twice. On hover the first copy slides up out of
+ * The button renders its label twice. On hover the first copy slides up out of
  * the clipped chip while the duplicate slides in from below, so the label appears to
  * roll over. Both copies move on the same 0.5s back-ease.
  */

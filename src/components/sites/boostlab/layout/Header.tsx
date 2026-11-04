@@ -10,8 +10,7 @@ import styles from "./Header.module.css";
 
 /**
  * Fixed header. It fades in as the page opens, and retracts upward while scrolling down,
- * returning on
- * scroll up — the same behaviour the source's header has.
+ * returning on scroll up.
  */
 export function Header() {
   const [hidden, setHidden] = useState(false);

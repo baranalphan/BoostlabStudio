@@ -1,0 +1,588 @@
+/* Transparent: the games page's shared backdrop (GamesStage) shows through. The screen's
+   glow may spill past the sides; it is clipped at the page edge, not the container. */
+.main {
+  --accent: var(--dark-white);
+  position: relative;
+  overflow-x: clip;
+}
+
+/* Same vertical rhythm as the Media block it replaced. */
+.container {
+  position: relative;
+  z-index: 2;
+  color: var(--dark-white);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas:
+    "head"
+    "stage"
+    "side";
+  row-gap: var(--space-m);
+  /* At least clear of the header band (GamesStage --nav-h) with some air. */
+  padding-top: max(
+    clamp(5rem, calc(5rem + 59 * (var(--v) - 37.5rem) / 865), clamp(10.9rem, calc(var(--v) / 1920 * 109), 11.354rem)),
+    calc(var(--nav-h, 0px) + 1.5rem)
+  );
+  padding-bottom: clamp(
+    5rem,
+    calc(5rem + 59 * (var(--v) - 37.5rem) / 865),
+    clamp(10.9rem, calc(var(--v) / 1920 * 109), 11.354rem)
+  );
+}
+
+/* Copy on the left, stage on the right, the whole thing centred on the screen. */
+@media (min-width: 64rem) {
+  .container {
+    min-height: 100vh;
+    grid-template-columns: minmax(0, 4fr) minmax(0, 7fr);
+    grid-template-rows: auto auto;
+    grid-template-areas:
+      "head stage"
+      "side stage";
+    align-content: center;
+    column-gap: var(--space-l);
+    row-gap: var(--space-l);
+  }
+
+  .head {
+    align-self: end;
+  }
+
+  .side {
+    align-self: start;
+  }
+}
+
+.head {
+  grid-area: head;
+}
+
+/* Above the screen's glow, which on phones spills a little onto the list below it. */
+.side {
+  grid-area: side;
+  position: relative;
+  z-index: 1;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-weight: 400;
+  text-transform: uppercase;
+  font-size: var(--fs-h3);
+  line-height: 0.9;
+  letter-spacing: 0.07em;
+  max-width: 12ch;
+}
+
+/* ---- game picker: the games stacked, each logo with its name beside it ---- */
+
+.picker {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.6rem;
+}
+
+.tile {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+  padding: 0.35rem 0;
+  border: none;
+  background: none;
+  color: rgb(250 251 253 / 0.55);
+  cursor: pointer;
+  text-align: left;
+  transition: color 0.5s var(--ease-split);
+}
+
+/* The logo's Reveal wrapper keeps its size beside a long name. */
+.tileIconReveal {
+  flex: none;
+}
+
+/* Block: it sits inside the Reveal wrapper, where an inline span would ignore its size
+   and collapse to nothing. */
+.tileIcon {
+  position: relative;
+  display: block;
+  flex: none;
+  width: 4.25rem;
+  height: 3.5rem;
+  transition: transform 0.6s var(--ease-split);
+}
+
+.tileIcon img {
+  object-fit: contain;
+  object-position: center;
+  filter: grayscale(1) brightness(0.75) drop-shadow(0 0.3rem 0.5rem rgb(0 0 0 / 0.6));
+  opacity: 0.6;
+  transition:
+    filter 0.5s var(--ease-split),
+    opacity 0.5s var(--ease-split);
+}
+
+/* Square artwork that isn't a cut-out gets rounded corners instead. */
+.tile:not([data-cutout]) .tileIcon img {
+  object-fit: cover;
+  border-radius: 0.8rem;
+}
+
+.tileName {
+  font-family: var(--font-display);
+  font-weight: 400;
+  text-transform: uppercase;
+  font-size: var(--fs-h4);
+  line-height: 0.95;
+  letter-spacing: 0.05em;
+  transition:
+    transform 0.6s var(--ease-split),
+    letter-spacing 0.6s var(--ease-split),
+    text-shadow 0.5s var(--ease-split);
+}
+
+.tile:hover {
+  color: rgb(250 251 253 / 0.85);
+}
+
+.tile:hover .tileIcon img {
+  filter: grayscale(0.2) brightness(0.95) drop-shadow(0 0.3rem 0.5rem rgb(0 0 0 / 0.6));
+  opacity: 0.9;
+}
+
+/* The selected game: logo in full colour and a little larger, name in white with a halo
+   in the game's colour, both stepping forward. */
+.tile[aria-selected="true"] {
+  color: var(--white, #fff);
+}
+
+.tile[aria-selected="true"] .tileIcon {
+  transform: scale(1.18);
+}
+
+.tile[aria-selected="true"] .tileIcon img {
+  filter: drop-shadow(0 0.4rem 0.7rem rgb(0 0 0 / 0.55))
+    drop-shadow(0 0 1rem color-mix(in srgb, var(--accent) 50%, transparent));
+  opacity: 1;
+}
+
+.tile[aria-selected="true"] .tileName {
+  transform: translateX(0.5rem);
+  letter-spacing: 0.08em;
+  text-shadow:
+    0 0 1.4rem color-mix(in srgb, var(--accent) 60%, transparent),
+    0 0.2rem 0.8rem rgb(0 0 0 / 0.5);
+}
+
+.tile:focus-visible {
+  outline: 2px solid var(--dark-white);
+  outline-offset: 6px;
+  border-radius: 0.5rem;
+}
+
+/* The smallest phones: a little smaller so the longest name still fits on one line. */
+@media (max-width: 23rem) {
+  .tileIcon {
+    width: 3.5rem;
+    height: 2.9rem;
+  }
+
+  .tileName {
+    font-size: calc(var(--fs-h4) * 0.85);
+  }
+}
+
+/* ---- the screen ---- */
+
+.stageWrap {
+  --rx: 4;
+  --ry: -9;
+  --gx: 18%;
+  --gy: 0%;
+  --hover: 0;
+  /* Phones keep a gentler version of the pose: the screen spans the full width there. */
+  --tilt: 0.45;
+
+  grid-area: stage;
+  position: relative;
+  isolation: isolate;
+  align-self: center;
+  /* Never taller than the viewport (phones held sideways), centred when narrowed. */
+  justify-self: center;
+  width: min(100%, calc((100svh - 6rem) * 16 / 9));
+  /* Room for the progress light outside the screen's edge. */
+  padding: 0.6rem;
+}
+
+@media (min-width: 64rem) {
+  .stageWrap {
+    --tilt: 1;
+  }
+}
+
+/* The live ambilight: a tiny canvas of the current picture, blown up and blurred. */
+.ambilight {
+  position: absolute;
+  inset: -6% -8%;
+  z-index: -1;
+  width: 116%;
+  height: 112%;
+  filter: blur(64px) saturate(1.5);
+  opacity: calc(0.12 + var(--hover) * 0.06);
+  pointer-events: none;
+}
+
+/* A slow drift up and down, so the screen hangs in the scene rather than sitting on it. */
+.float {
+  animation: float 7s ease-in-out infinite alternate;
+}
+
+@keyframes float {
+  from {
+    transform: translateY(0.35rem);
+  }
+  to {
+    transform: translateY(-0.55rem);
+  }
+}
+
+.screen {
+  position: relative;
+  border-radius: var(--radius-l);
+  transform: perspective(1400px) rotateX(calc(var(--rx) * var(--tilt) * 1deg))
+    rotateY(calc(var(--ry) * var(--tilt) * 1deg)) scale(calc(1 + var(--hover) * 0.02));
+  will-change: transform;
+}
+
+.stage {
+  position: relative;
+  container-type: inline-size;
+  aspect-ratio: 16 / 9;
+  border-radius: inherit;
+  overflow: hidden;
+  isolation: isolate;
+  background-color: #0b0b0c;
+  box-shadow:
+    0 0 0 1px rgb(255 255 255 / 0.08),
+    0 2.5rem 5rem -2rem rgb(0 0 0 / 0.3),
+    0 1rem 2rem -1rem rgb(0 0 0 / 0.2);
+}
+
+/* A thin bevel of light round the glass, brightest on the edge nearest the pointer. */
+.stage::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  padding: 1px;
+  border-radius: inherit;
+  background: radial-gradient(
+    circle at var(--gx) var(--gy),
+    rgb(255 255 255 / 0.85),
+    rgb(255 255 255 / 0.12) 40%,
+    rgb(255 255 255 / 0.05) 70%
+  );
+  opacity: calc(0.1 + var(--hover) * 0.2);
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.layer {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.8s var(--ease-split);
+}
+
+.layer[data-active="true"] {
+  z-index: 1;
+  opacity: 1;
+}
+
+/* Each game settles in from a slight zoom as it fades up. */
+.media {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* --zoom crops black bars baked into a clip (ShowreelGame.videoZoom). */
+  transform: scale(calc(1.08 * var(--zoom, 1)));
+  transition: transform 1.2s var(--ease-split);
+}
+
+.layer[data-active="true"] .media {
+  transform: scale(var(--zoom, 1));
+}
+
+.backdrop {
+  object-fit: cover;
+  filter: blur(28px) brightness(0.45) saturate(1.4);
+  transform: scale(1.2);
+}
+
+.still {
+  object-fit: contain;
+  filter: brightness(0.5) saturate(0.85);
+}
+
+/* The band of light that crosses the glass on every game change. */
+.shine {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: linear-gradient(
+    105deg,
+    transparent 30%,
+    rgb(255 255 255 / 0.02) 42%,
+    rgb(255 255 255 / 0.1) 50%,
+    rgb(255 255 255 / 0.02) 58%,
+    transparent 70%
+  );
+  mix-blend-mode: screen;
+  transform: translateX(-110%);
+  animation: shine 1.1s var(--ease-split) 0.1s both;
+  pointer-events: none;
+}
+
+@keyframes shine {
+  to {
+    transform: translateX(110%);
+  }
+}
+
+/* A soft highlight on the glass that slides with the pointer. */
+.glare {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  background: radial-gradient(
+    circle at var(--gx) var(--gy),
+    rgb(255 255 255 / 0.28),
+    rgb(255 255 255 / 0.06) 32%,
+    transparent 60%
+  );
+  mix-blend-mode: overlay;
+  opacity: calc(0.1 + var(--hover) * 0.15);
+  pointer-events: none;
+}
+
+/* ---- video controls: a glass pill in the bottom-left corner of the screen ---- */
+
+.controls {
+  position: absolute;
+  left: var(--space-s);
+  bottom: var(--space-s);
+  z-index: 5;
+  display: flex;
+  gap: 0.35rem;
+  padding: 0.4rem;
+  border-radius: 5rem;
+  background-color: rgb(0 0 0 / 0.45);
+  border: 1px solid rgb(255 255 255 / 0.14);
+  backdrop-filter: blur(12px);
+  opacity: 0.8;
+  transform: translateY(0.25rem);
+  transition:
+    opacity 0.4s var(--ease-split),
+    transform 0.4s var(--ease-split);
+}
+
+/* Fully there while the pointer is on the screen or a control has focus. */
+.stage:hover .controls,
+.controls:focus-within {
+  opacity: 1;
+  transform: none;
+}
+
+.control {
+  display: grid;
+  place-items: center;
+  width: 2.9rem;
+  height: 2.9rem;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: none;
+  color: var(--dark-white);
+  cursor: pointer;
+  transition:
+    background-color 0.3s var(--ease-split),
+    transform 0.3s var(--ease-split);
+}
+
+.control:hover {
+  background-color: rgb(255 255 255 / 0.16);
+}
+
+.control:active {
+  transform: scale(0.92);
+}
+
+.control:focus-visible {
+  outline: 2px solid var(--dark-white);
+  outline-offset: 2px;
+}
+
+.control svg {
+  width: 1.6rem;
+  height: 1.6rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.control svg .solid {
+  fill: currentColor;
+  stroke: none;
+}
+
+.control svg text {
+  fill: currentColor;
+  stroke: none;
+  font-family: var(--font-mono);
+  font-size: 6.5px;
+  font-weight: 600;
+}
+
+@media (min-width: 64rem) {
+  .controls {
+    left: var(--space-m);
+    bottom: var(--space-m);
+  }
+
+  .control {
+    width: 3.5rem;
+    height: 3.5rem;
+  }
+
+  .control svg {
+    width: 1.9rem;
+    height: 1.9rem;
+  }
+}
+
+/* ---- "coming soon" card for games without a clip yet ---- */
+
+.soon {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  text-align: center;
+}
+
+.soonKicker {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  text-transform: uppercase;
+  font-size: var(--fs-cap);
+  line-height: 1;
+  letter-spacing: 0.18em;
+  padding: 0.5rem 0.85rem;
+  border-radius: 5rem;
+  border: 1px solid rgb(255 255 255 / 0.3);
+  background-color: rgb(0 0 0 / 0.35);
+  backdrop-filter: blur(6px);
+}
+
+.soonTitle {
+  font-family: var(--font-display);
+  font-weight: 400;
+  text-transform: uppercase;
+  font-size: 9cqi;
+  line-height: 0.9;
+  letter-spacing: 0.08em;
+  color: var(--white, #fff);
+  text-shadow:
+    0 0 1.6rem color-mix(in srgb, var(--accent) 60%, transparent),
+    0 0.2rem 1rem rgb(0 0 0 / 0.7);
+}
+
+/* The words rise in each time the card comes on stage. */
+.layer[data-active="true"] .soonKicker,
+.layer[data-active="true"] .soonTitle {
+  animation: soonIn 0.9s var(--ease-split) both;
+}
+
+.layer[data-active="true"] .soonTitle {
+  animation-delay: 0.12s;
+}
+
+@keyframes soonIn {
+  from {
+    opacity: 0;
+    transform: translateY(1rem);
+    letter-spacing: 0.2em;
+  }
+}
+
+/* ---- progress: a light running once round the screen ---- */
+
+/* Offset by TRACE_GAP (Showreel.tsx) so the light runs just outside the glass. */
+.tracer {
+  position: absolute;
+  top: -9px;
+  left: -9px;
+  z-index: 6;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.track,
+.trace {
+  fill: none;
+}
+
+/* A dark groove under a faint line, so the path reads on light and dark scenes alike. */
+.track {
+  stroke: rgb(255 255 255 / 0.22);
+  stroke-width: 1.5;
+  filter: drop-shadow(0 0 2px rgb(0 0 0 / 0.8));
+}
+
+.trace {
+  stroke: var(--accent);
+  stroke-width: 3;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  filter: drop-shadow(0 0 2px color-mix(in srgb, var(--accent) 30%, transparent))
+    drop-shadow(0 0 2px rgb(0 0 0 / 0.6));
+  transition: stroke 0.5s var(--ease-split);
+}
+
+/* The spark at the head of the light. */
+.spark {
+  fill: #fff;
+  opacity: 0;
+  filter: drop-shadow(0 0 3px color-mix(in srgb, var(--accent) 35%, transparent));
+  transition: opacity 0.3s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tile,
+  .tileIcon,
+  .tileIcon img,
+  .tileName,
+  .layer,
+  .media {
+    transition: none;
+  }
+
+  .float,
+  .shine,
+  .soonKicker,
+  .soonTitle {
+    animation: none;
+  }
+}

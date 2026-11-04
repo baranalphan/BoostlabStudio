@@ -125,22 +125,6 @@
   border-color: var(--dark-grey-1);
 }
 
-/* simple + simple-underline: inline text links */
-.simple .content,
-.simpleUnderline .content {
-  font-family: var(--font-body);
-  font-weight: 400;
-  font-size: var(--fs-body);
-  line-height: 1.33;
-  letter-spacing: 0.01em;
-  color: var(--dark-white);
-  border: none;
-  border-radius: 0;
-}
-.simpleUnderline .content {
-  text-decoration: underline;
-}
-
 .label {
   display: inline-block;
   /* Safety net: a label wider than its column (a long email) breaks instead of spilling. */

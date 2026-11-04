@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Container } from "../ui/Layout";
+import { Reveal } from "../ui/Reveal";
 import { SteamIcon } from "../icons/SteamIcon";
 import { DiscordIcon, InstagramIcon, LinkedInIcon } from "../icons/SocialIcons";
 import { footer } from "../content";
@@ -28,9 +29,11 @@ export function Footer() {
             className={styles.logoImage}
           />
         </Link>
-        <p className={styles.copyright}>
-          © {new Date().getFullYear()} {footer.copyright}
-        </p>
+        <Reveal mode="slide" className={styles.copyright}>
+          <p>
+            © {new Date().getFullYear()} {footer.copyright}
+          </p>
+        </Reveal>
         <ul className={styles.socials}>
           {footer.socials.map((social) => {
             const Icon = ICONS[social.icon];

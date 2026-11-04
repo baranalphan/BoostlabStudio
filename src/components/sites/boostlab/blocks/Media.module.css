@@ -33,7 +33,7 @@
   max-width: 40ch;
 }
 
-/* ---- LandscapeRight (home "A studio which brings all to the table") ---- */
+/* ---- LandscapeRight: text left, video right (home "Dive into the worlds we drop") ---- */
 
 .landscapeRight {
   padding-top: clamp(
@@ -55,13 +55,7 @@
   width: 100%;
 }
 
-/*
- * Text and GIF sit side by side on a two-column grid, centred as one unit.
- * The GIF card keeps its original size (70% of the container, 1.5:1, tilted), but the
- * square GIF only fills the middle 82% of the card's height, leaving empty bands on
- * both sides. Negative inline margins pull the card's footprint in to the visible GIF,
- * so the grid lays out — and centres — what you actually see.
- */
+/* Text and video sit side by side on a two-column grid, centred as one unit. */
 @media (min-width: 64rem) {
   .landscapeRight {
     container-type: inline-size;
@@ -74,13 +68,6 @@
 
   .landscapeRight .title {
     max-width: 12ch;
-  }
-
-  .landscapeRight .gifWrapper {
-    --media-w: calc((100cqw + 2 * var(--container-pad)) * 0.7);
-    --media-visible: calc(var(--media-w) / 1.5 * 0.82);
-    width: var(--media-w);
-    margin-inline: calc((var(--media-visible) - var(--media-w)) / 2);
   }
 }
 
@@ -132,36 +119,10 @@
   overflow: hidden;
 }
 
-.mediaFill img,
 .mediaFill video {
   width: 100%;
   height: 100%;
   object-fit: cover;
-}
-
-/* The source over-scans the media by 20% so its parallax never reveals an edge. */
-.scaleUp {
-  transform: scale(1.2);
-}
-
-/* ---- Media Fill for GIF: restored previous size, background completely removed ---- */
-
-.mediaFillGif {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: transparent !important;
-}
-
-.mediaFillGif img,
-.mediaFillGif video {
-  width: 100%;
-  height: 100%;
-  max-width: 82%;
-  max-height: 82%;
-  object-fit: contain !important;
-  margin: auto;
-  border-radius: var(--radius-l);
 }
 
 .title {
@@ -179,4 +140,9 @@
   font-size: var(--fs-body);
   line-height: 1.33;
   letter-spacing: 0.01em;
+}
+
+/* Body lines move faster than the headings' 0.8s rise. */
+.bodyLines > span > span > span {
+  transition-duration: 0.5s;
 }

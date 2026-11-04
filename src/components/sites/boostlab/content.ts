@@ -4,11 +4,11 @@
  */
 
 import type {
-  CarouselCard,
-  CmsLink,
-  CmsMedia,
+  SiteLink,
+  SiteMedia,
   ContactField,
   NewsItem,
+  ShowreelGame,
 } from "@/types/boostlab";
 
 const IMG = "/sites/boostlab/images";
@@ -19,15 +19,15 @@ const IDLE_REEF_STEAM = "https://store.steampowered.com/app/5188560/Idle_Reef/?c
 
 export const header = {
   logo: {
-    url: "/sites/boostlab/images/boostlab-logo.png",
+    url: "/sites/boostlab/images/boostlab-logo-seffaf.webp",
     alt: "Boostlab",
-    width: 510,
-    height: 570,
+    width: 214,
+    height: 240,
   },
   links: [
     { label: "Games", url: "/games" },
     { label: "Support", url: "/support" },
-  ] satisfies CmsLink[],
+  ] satisfies SiteLink[],
 };
 
 /** Footer social icons. Links without a `url` are shown but not clickable yet. */
@@ -48,103 +48,6 @@ export const homeHero = {
 };
 
 export const homeAbout = {
-  label: "Boostlab",
-  title: "A studio which brings all to the table",
-  media: {
-    mime: "video/mp4",
-    alt: "Animated Boostlab Studio logo",
-    url: `${VID}/boostlab-logo.mp4`,
-    width: 800,
-    height: 800,
-    animation: true,
-  } satisfies CmsMedia,
-};
-
-export const homeCards = {
-  title: "The goods.",
-  cards: [
-    {
-      title: "Sins Simulator",
-      image: { url: `${IMG}/sins-simulator-vertical.png`, alt: "Sins Simulator", width: 1496, height: 1792 },
-    },
-    {
-      title: "Idle Reef",
-      url: IDLE_REEF_STEAM,
-      image: { url: `${IMG}/idle-reef-logo-blue.png`, alt: "Idle Reef logo", width: 1080, height: 1080 },
-    },
-    {
-      title: "Pyramid Diggers",
-      image: { url: `${IMG}/pyramid-4.png`, alt: "Pyramid Diggers", width: 1496, height: 1792 },
-    },
-  ] as const,
-};
-
-export const homeNews = {
-  label: "Updates",
-  title: "Latest from  Boostlab",
-  news: [
-    {
-      date: "2026-09-15",
-      title: "Partnerships",
-      description: "Boostlab Studio partners with PlayWay S.A.",
-      image: {
-        mime: "image/png",
-        alt: "Boostlab logo",
-        url: `${IMG}/boostlab-logo-bg.png`,
-        width: 1920,
-        height: 1080,
-      },
-    },
-    {
-      date: "2026-10-31",
-      title: "Release",
-      description: "Idle Reef is now available on Steam",
-      image: {
-        mime: "image/png",
-        alt: "Idle Reef",
-        url: `${IMG}/idle-reef-logo-blue.png`,
-        width: 1080,
-        height: 1080,
-      },
-    },
-    {
-      title: "Upcoming",
-      description: "Pyramid Diggers is coming soon",
-      image: {
-        mime: "image/png",
-        alt: "Pyramid Diggers",
-        url: `${IMG}/pyramid-4.png`,
-        width: 1496,
-        height: 1792,
-      },
-    },
-    {
-      title: "Upcoming",
-      description: "Sins Simulator is coming soon",
-      image: {
-        mime: "image/png",
-        alt: "Sins Simulator",
-        url: `${IMG}/sins-simulator-vertical.png`,
-        width: 1496,
-        height: 1792,
-      },
-    },
-  ] satisfies NewsItem[],
-};
-
-/* --------------------------------------------------------------------- games */
-
-export const gamesHero = {
-  video: {
-    mime: "video/mp4",
-    alt: "Boostlab",
-    url: `${VID}/boostlab-wide.mp4`,
-    width: 1920,
-    height: 1040,
-  } satisfies CmsMedia,
-};
-
-export const gamesAbout = {
   label: "Boostlab Studio",
   title: "Dive into the worlds we drop",
   description:
@@ -155,29 +58,65 @@ export const gamesAbout = {
     url: `${VID}/we-are-boostlab.mp4`,
     width: 1492,
     height: 1920,
-  } satisfies CmsMedia,
+  } satisfies SiteMedia,
 };
 
-export const gamesCarousel = {
-  label: "Explore",
-  title: "Our games",
-  cards: [
+export const homeNews = {
+  label: "Updates",
+  title: "Latest from  Boostlab",
+  news: [
     {
-      title: "Sins Simulator",
-      theme: "city",
-      image: {
-        mime: "image/png",
-        alt: "Sins Simulator",
-        url: `${IMG}/sins-simulator-vertical.png`,
-        width: 1496,
-        height: 1792,
-      },
+      date: "2026-09-15",
+      title: "Partnerships",
+      description: "Boostlab Studio partners with PlayWay S.A.",
     },
     {
+      date: "2026-10-31",
+      title: "Release",
+      description: "Idle Reef is now available on Steam",
+    },
+    {
+      title: "Upcoming",
+      description: "Pyramid Diggers is coming soon",
+    },
+    {
+      title: "Upcoming",
+      description: "Sins Simulator is coming soon",
+    },
+  ] satisfies NewsItem[],
+};
+
+/* --------------------------------------------------------------------- games */
+
+/**
+ * The showreel that opens the games page. To add a game's clip, drop the MP4 in
+ * public/sites/boostlab/videos and set `video: `${VID}/<file>.mp4``; the poster keeps
+ * showing until it loads.
+ */
+export const gamesShowreel = {
+  label: "Showreel",
+  title: "See them in action",
+  /** The scroll journey under the showreel. */
+  journey: {
+    label: "Explore",
+    title: "Our games",
+    hint: "Scroll to travel",
+  },
+  games: [
+    {
       title: "Idle Reef",
+      accent: "#4cb8ff",
       theme: "reef",
+      video: `${VID}/idle-reef-trailer.mp4`,
+      icon: { url: `${IMG}/idle-reef-icon-cutout.webp`, cutout: true },
+      tagline: "Your desktop. Now an aquarium.",
+      blurb:
+        "Idle Reef turns the screen you work on into a living reef. Hatch eggs, discover new fish and earn points while you work.",
+      tags: ["Idle", "Desktop aquarium"],
       url: IDLE_REEF_STEAM,
-      image: {
+      logo: { url: `${IMG}/idle-reef-logo.webp`, width: 779, height: 577 },
+      shots: [`${IMG}/shots/idle-reef-2.webp`, `${IMG}/shots/idle-reef-1.webp`, `${IMG}/shots/idle-reef-3.webp`],
+      poster: {
         mime: "image/jpeg",
         alt: "Idle Reef",
         url: `${IMG}/idle-reef.jpg`,
@@ -187,16 +126,48 @@ export const gamesCarousel = {
     },
     {
       title: "Pyramid Diggers",
+      accent: "#f0a64a",
       theme: "desert",
-      image: {
-        mime: "image/png",
+      video: `${VID}/pyramid-diggers.mp4`,
+      // The clip is 2:1 letterboxed to 1920 × 1080 (60 px bars top and bottom): 1080 / 960,
+      // plus a hair so no dark edge row survives scaling.
+      videoZoom: 1.13,
+      icon: { url: `${IMG}/pyramid-diggers-icon.webp`, cutout: true },
+      tagline: "Raise a wonder, block by block.",
+      blurb:
+        "Lead your workers across the desert, haul stone and raise monuments until your pyramid touches the sky. Just keep an eye on what's up there.",
+      tags: ["Building", "Ancient Egypt"],
+      logo: { url: `${IMG}/pyramid-diggers-logo.webp`, width: 952, height: 700 },
+      shots: [`${IMG}/shots/pyramid-1.webp`, `${IMG}/shots/pyramid-2.webp`, `${IMG}/shots/pyramid-3.webp`],
+      poster: {
+        mime: "image/webp",
         alt: "Pyramid Diggers",
-        url: `${IMG}/pyramid-4.png`,
+        url: `${IMG}/pyramid-diggers-poster.webp`,
         width: 1496,
         height: 1792,
       },
     },
-  ] satisfies CarouselCard[],
+    {
+      title: "Sins Simulator",
+      accent: "#ff4d5e",
+      theme: "city",
+      // No clip: the reel shows the "coming soon" card.
+      icon: { url: `${IMG}/sins-simulator-icon.webp`, cutout: true },
+      tagline: "Content rated: spicy.",
+      blurb:
+        "A rain-soaked city where every deal is a risk. Hustle your way up from the street and build an empire after dark.",
+      tags: ["Simulation", "Crime"],
+      logo: { url: `${IMG}/sins-simulator-logo.webp`, width: 1000, height: 478 },
+      shots: [`${IMG}/shots/sins-0.webp`, `${IMG}/shots/sins-2.webp`, `${IMG}/shots/sins-1.webp`],
+      poster: {
+        mime: "image/webp",
+        alt: "Sins Simulator",
+        url: `${IMG}/sins-simulator-poster.webp`,
+        width: 1496,
+        height: 1792,
+      },
+    },
+  ] as ShowreelGame[],
 };
 
 export const gamesCta = {
@@ -206,7 +177,7 @@ export const gamesCta = {
     label: "Download on Steam",
     url: "https://store.steampowered.com/curator/46610619",
     newTab: true,
-  } satisfies CmsLink,
+  } satisfies SiteLink,
 };
 
 /* ------------------------------------------------------------------- support */

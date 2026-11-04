@@ -8,11 +8,11 @@ type SplitTextProps = {
   children: string;
   /** Seconds before the first line starts moving. */
   delay?: number;
-  /** Seconds added per line. The source staggers lines by 0.1s. */
+  /** Seconds added per line. */
   lineStagger?: number;
   /** The hero heading also un-skews as the lines rise. */
   skew?: boolean;
-  /** Shrink the rendered block to its longest line, as the source's h1 does. */
+  /** Shrink the rendered block to its longest line (page headings). */
   shrink?: boolean;
   animate?: boolean;
   className?: string;
@@ -21,12 +21,12 @@ type SplitTextProps = {
 const useIsomorphicLayoutEffect = typeof window === "undefined" ? useEffect : useLayoutEffect;
 
 /**
- * Mirrors the source's SplitText. The string is rendered once, visually hidden, for
+ * Line-by-line text reveal. The string is rendered once, visually hidden, for
  * assistive tech; the visible copy is split into the lines the text actually wraps
  * onto, each line clipped so its inner span can slide up from translateY(105%).
  *
  * The lines are measured from the rendered word positions rather than guessed, and
- * re-measured on resize, because the source's headings reflow with the fluid type scale.
+ * re-measured on resize, because the headings reflow with the fluid type scale.
  */
 export function SplitText({
   children,
@@ -49,7 +49,7 @@ export function SplitText({
        * The probe is out of flow so it cannot inflate the heading's max-content width
        * (see SplitText.module.css). Putting it back in flow for the read makes the
        * heading resolve to the width the unwrapped string would occupy — capped by its
-       * own max-width — which is the width the source splits at. Without this the
+       * own max-width — which is the width to split at. Without this the
        * heading shrinks to its longest line and the next measurement re-wraps against
        * that narrower box.
        */
@@ -79,9 +79,51 @@ export function SplitText({
     return () => observer.disconnect();
   }, [children]);
 
+  /*
+   * The lines rise the first time the text scrolls into view, like Reveal. The measured
+   * lines are new DOM nodes: if the animate class landed in the same commit they would
+   * never be painted at translateY(105%) and would skip the transition, so only the
+   * first line (whose node is reused) moved. Waiting two frames lets the browser paint
+   * the start position first.
+   */
+  const wrapperRef = useRef<HTMLSpanElement>(null);
+  const [playing, setPlaying] = useState(false);
+  useEffect(() => {
+    if (!lines || playing) return;
+    let first = 0;
+    let second = 0;
+    const start = () => {
+      first = requestAnimationFrame(() => {
+        second = requestAnimationFrame(() => setPlaying(true));
+      });
+    };
+    const node = wrapperRef.current;
+    let observer: IntersectionObserver | undefined;
+    if (node && "IntersectionObserver" in window) {
+      observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            observer?.disconnect();
+            start();
+          }
+        },
+        { rootMargin: "0px 0px -10% 0px" },
+      );
+      observer.observe(node);
+    } else {
+      start();
+    }
+    return () => {
+      observer?.disconnect();
+      cancelAnimationFrame(first);
+      cancelAnimationFrame(second);
+    };
+  }, [lines, playing]);
+
   return (
     <span
-      className={cn(styles.wrapper, lines && styles.visible, animate && lines && styles.animate, className)}
+      ref={wrapperRef}
+      className={cn(styles.wrapper, lines && styles.visible, animate && playing && styles.animate, className)}
       style={{ "--delay": `${delay}s` } as React.CSSProperties}
     >
       <span className={styles.srOnly}>{children}</span>

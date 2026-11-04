@@ -5,7 +5,7 @@ import { homeNews } from "../content";
 import type { NewsItem } from "@/types/boostlab";
 import styles from "./NewsList.module.css";
 
-/** `2025-05-14` → `05.14.25`, the format the source prints; undated items read "Soon". */
+/** `2025-05-14` → `05.14.25`; undated items read "Soon". */
 function formatDate(iso?: string) {
   if (!iso) return "Soon";
   const [y, m, d] = iso.split("-");
@@ -30,12 +30,22 @@ export function NewsList() {
         </Grid>
 
         <ul className={styles.list}>
-          {NEWS.map((item) => {
+          {NEWS.map((item, i) => {
+            // Each row rises in as it scrolls into view, a beat after the one above it.
+            const delay = i * 0.08;
             const content = (
               <>
-                <span className={styles.cap}>{formatDate(item.date)}</span>
-                <span className={styles.cap}>{item.title}</span>
-                <span className={styles.body}>{item.description}</span>
+                <Reveal mode="slide" delay={delay} className={styles.cap}>
+                  {formatDate(item.date)}
+                </Reveal>
+                <Reveal mode="slide" delay={delay + 0.05} className={styles.cap}>
+                  {item.title}
+                </Reveal>
+                <span className={styles.body}>
+                  <SplitText delay={delay + 0.1} lineStagger={0.04}>
+                    {item.description}
+                  </SplitText>
+                </span>
               </>
             );
             return (

@@ -45,7 +45,7 @@
 }
 
 .kicker {
-  color: var(--overdrive-blue);
+  color: var(--accent-blue);
 }
 
 .topics {
@@ -56,7 +56,9 @@
 }
 
 /* Static tags in the button chips' mono caps, at the same type size as the buttons. */
+/* Block, so its padding and border stay inside the clip of the reveal around it. */
 .topic {
+  display: block;
   padding: 0.7rem 0.9rem;
   font-family: var(--font-mono);
   font-weight: 500;
@@ -113,7 +115,6 @@
 .mail {
   font-family: var(--font-mono);
   font-weight: 500;
-  text-transform: uppercase;
   font-size: var(--fs-cap);
   line-height: 1;
   letter-spacing: -0.007em;
@@ -193,7 +194,7 @@
 }
 
 .input[aria-invalid="true"] {
-  border-color: var(--prize-purple);
+  border-color: var(--accent-purple);
 }
 
 .textarea {
@@ -205,7 +206,7 @@
   font-family: var(--font-body);
   font-size: var(--fs-cap);
   line-height: 1.2;
-  color: var(--prize-purple);
+  color: var(--accent-purple);
 }
 
 .footer {
@@ -226,7 +227,7 @@
 }
 
 .status[data-status="error"] {
-  color: var(--prize-purple);
+  color: var(--accent-purple);
 }
 
 .honeypot {

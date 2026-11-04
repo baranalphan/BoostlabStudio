@@ -1,25 +1,56 @@
-/* ---- Scene stack: fills the whole "Our games" section behind everything ---- */
+/* ---- Scene stack: behind the games page's showreel and journey ---- */
 
+/* clip rather than hidden, so the sticky frame below still sticks to the viewport. */
+/* Starts below the black band at the top of the page (GamesStage --nav-h). */
 .scenes {
   position: absolute;
-  inset: 0;
+  inset: var(--nav-h, 0px) 0 0;
   z-index: -3;
   pointer-events: none;
-  overflow: hidden;
+  overflow: clip;
 }
 
-/* Melts the top and bottom edges into the black sections around it. */
+/* Melts the bottom of the stage into the black section after it. */
 .scenes::after {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    to bottom,
-    var(--boostlab-black) 0%,
-    transparent 22%,
-    transparent 82%,
-    var(--boostlab-black) 100%
-  );
+  background: linear-gradient(to bottom, transparent calc(100% - 10rem), var(--boostlab-black) 100%);
+}
+
+/*
+ * The painting stays on screen while the stage scrolls past it. The stage is several
+ * screens tall, so stretching the painting over all of it would blow it up; instead it
+ * covers the viewport and pans from its top to its bottom as you scroll (--pan, set by
+ * GamesStage): sky over the showreel, ground by the end of the journey.
+ */
+/* Clipped, so the bloom's blur can't spill up into the black band above it. */
+.frame {
+  position: sticky;
+  top: 0;
+  overflow: hidden;
+  height: 100vh;
+  height: 100svh;
+}
+
+/*
+ * One shade over the painting, wherever it shows (showreel, the "Our games" heading and
+ * every chapter): darker where the copy sits — along the bottom on phones, down the left
+ * on desktop — so the text reads on the brightest scene. It sits on the painting, under
+ * the particles and the content.
+ */
+.frame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(to top, rgb(0 0 0 / 0.6), rgb(0 0 0 / 0.25) 55%, transparent 75%);
+}
+
+@media (min-width: 64rem) {
+  .frame::after {
+    background: linear-gradient(to right, rgb(0 0 0 / 0.55), rgb(0 0 0 / 0.25) 35%, transparent 55%);
+  }
 }
 
 .scene {
@@ -33,63 +64,46 @@
   opacity: 1;
 }
 
-/*
- * The painted backdrop of each theme (from scripts/build-theme-fx.mjs), in two layers:
- *  - .photoFill: the same painting, heavily blurred and dimmed, covering the section, so
- *    any margin around the painting reads as out-of-focus scenery rather than a gap;
- *  - .photo: the painting itself, fitted to the section's width (as much of it as
- *    possible shows; only a section much taller than the painting's proportions makes it
- *    grow to cover 85% of the height), slightly softened, with a bloom on top.
- * Phones get a centred portrait crop instead.
- */
-.photoFill,
+/* The painting (from scripts/build-theme-fx.mjs), unblurred, with a bloom on top. */
 .photo {
   position: absolute;
-  background-image: var(--wide);
-  background-repeat: no-repeat;
-  background-position: 50% 45%;
-}
-
-.photoFill {
-  inset: -4rem;
-  background-size: cover;
-  filter: blur(14px) brightness(0.7) saturate(1.15);
-}
-
-.photo {
   inset: 0;
-  background-size: auto max(calc(100vw / 1.79), 85%);
-  filter: blur(1.4px) saturate(1.1);
+  background-image: var(--bg);
+  background-repeat: no-repeat;
+  background-position: 50% calc(var(--pan, 0.3) * 100%);
+  background-size: cover;
+  filter: saturate(1.08);
 }
 
-/* Bloom: a blurred, brightened copy screened over the painting, so its lights glow softly
-   into the dark around them. It inherits the painting's background, size and mask. */
+/*
+ * Bloom, in two passes of the same painting screened over itself (both inherit its
+ * background and size): a tight one so lights glow into the dark right around them, and
+ * a wide, faint one that lifts the whole scene into a soft dreamy haze.
+ */
+.photo::before,
 .photo::after {
   content: "";
   position: absolute;
   inset: 0;
   background: inherit;
-  filter: blur(22px) brightness(1.35);
   mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+.photo::after {
+  filter: blur(22px) brightness(1.35);
   opacity: 0.45;
 }
 
-@media (max-aspect-ratio: 4/5) {
-  .photoFill,
-  .photo {
-    background-image: var(--tall);
-  }
-
-  .photo {
-    background-size: cover;
-  }
+.photo::before {
+  filter: blur(80px) brightness(1.25) saturate(1.3);
+  opacity: 0.28;
 }
 
 /* ---- Idle Reef: inside an aquarium ---- */
 
 .reef {
-  --wide: url("/sites/boostlab/images/fx/reef/bg-wide.webp");
-  --tall: url("/sites/boostlab/images/fx/reef/bg-tall.webp");
+  --bg: url("/sites/boostlab/images/fx/reef/bg.webp");
   background-color: #04213a;
 }
 
@@ -115,16 +129,14 @@
 /* ---- Pyramid Diggers: desert at sunset ---- */
 
 .desert {
-  --wide: url("/sites/boostlab/images/fx/desert/bg-wide.webp");
-  --tall: url("/sites/boostlab/images/fx/desert/bg-tall.webp");
+  --bg: url("/sites/boostlab/images/fx/desert/bg.webp");
   background-color: #2a1208;
 }
 
 /* ---- Sins Simulator: crime city at night ---- */
 
 .city {
-  --wide: url("/sites/boostlab/images/fx/city/bg-wide.webp");
-  --tall: url("/sites/boostlab/images/fx/city/bg-tall.webp");
+  --bg: url("/sites/boostlab/images/fx/city/bg.webp");
   background-color: #05040a;
 }
 
@@ -172,7 +184,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  height: 45%;
+  height: 30%;
   mix-blend-mode: screen;
   animation: siren 1.3s ease-in-out infinite;
 }
@@ -197,14 +209,13 @@
   }
 }
 
-/* ---- Particle canvases ---- */
+/* ---- Particle canvases: each a viewport-sized canvas stuck to the screen, in a track
+   that spans the stage ---- */
 
 .particlesBack,
 .particlesFront {
   position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
+  inset: var(--nav-h, 0px) 0 0;
   pointer-events: none;
 }
 
@@ -212,9 +223,18 @@
   z-index: -2;
 }
 
-/* Above the ring's cards (they stack up to z-index 100) so things pass over the art. */
+/* Above both sections so things fall and swim over their content. */
 .particlesFront {
   z-index: 150;
+}
+
+.canvas {
+  position: sticky;
+  top: 0;
+  display: block;
+  width: 100%;
+  height: 100vh;
+  height: 100svh;
 }
 
 @media (prefers-reduced-motion: reduce) {

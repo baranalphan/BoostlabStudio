@@ -1,0 +1,22 @@
+/* One stacking context for the shared backdrop (z -3), the particles behind (-2) and in
+   front (150) of both sections. */
+.main {
+  --pan: 0.3;
+  /* A black band at the top of the page, as tall as the header (its top padding plus the
+     menu toggle, or the nav buttons on desktop) and 0.3rem more, so the buttons don't sit
+     on the backdrop's edge: the header opens on black here,
+     as it does on the homepage. The band scrolls away with the page; the header then
+     hides and returns as usual. GamesStage overwrites this with the header's measured
+     height; these values only hold until it has. */
+  --nav-h: calc(var(--space-m) + 3.5rem + 0.3rem);
+
+  position: relative;
+  isolation: isolate;
+  background-color: var(--boostlab-black);
+}
+
+@media (min-width: 64rem) {
+  .main {
+    --nav-h: calc(var(--space-m) + 3.3rem + 0.3rem);
+  }
+}

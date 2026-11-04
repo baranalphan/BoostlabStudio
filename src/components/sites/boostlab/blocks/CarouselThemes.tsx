@@ -11,14 +11,9 @@ const FX = "/sites/boostlab/images/fx";
 /* Built by scripts/build-theme-fx.mjs from the art in BoostlabStudioAssets/Games.       */
 /* ------------------------------------------------------------------------------------ */
 
-/** The painting, softly bloomed, over a heavily blurred copy that fills any margin. */
+/** The painting, softly bloomed. */
 function Photo() {
-  return (
-    <>
-      <span className={styles.photoFill} />
-      <span className={styles.photo} />
-    </>
-  );
+  return <span className={styles.photo} />;
 }
 
 function Reef() {
@@ -50,14 +45,16 @@ const SCENES: Record<GameTheme, () => React.JSX.Element> = { reef: Reef, desert:
 export function ThemeBackdrop({ theme }: { theme: GameTheme }) {
   return (
     <div className={styles.scenes} aria-hidden="true">
-      {(Object.keys(SCENES) as GameTheme[]).map((key) => {
-        const Scene = SCENES[key];
-        return (
-          <div key={key} className={`${styles.scene} ${styles[key]}`} data-on={key === theme}>
-            <Scene />
-          </div>
-        );
-      })}
+      <div className={styles.frame}>
+        {(Object.keys(SCENES) as GameTheme[]).map((key) => {
+          const Scene = SCENES[key];
+          return (
+            <div key={key} className={`${styles.scene} ${styles[key]}`} data-on={key === theme}>
+              <Scene />
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }
@@ -153,6 +150,10 @@ type Sprites = {
 };
 
 const MAX_PARTICLES = 700;
+/** Canvas pixels per layer, so a large, high-density screen doesn't get a huge canvas. */
+const MAX_CANVAS_PIXELS = 8_000_000;
+/** The section height the spawn rates were tuned for; taller stages spawn proportionally more. */
+const BASE_HEIGHT = 1300;
 const cache = new Map<GameTheme, Sprites>();
 
 /** Each theme's sprites load the first time that theme is shown. */
@@ -395,7 +396,8 @@ function move(p: Particle, t: number, dt: number) {
 }
 
 /**
- * The swimming, falling and rising bits of each theme. When the theme changes, the old
+ * The swimming, falling and rising bits of each theme. The canvases stay on screen while
+ * the stage scrolls, so falling things always drop from the top of the window. When the theme changes, the old
  * particles fade out over a second while the new theme's start, so scenes cross-fade.
  */
 export function ThemeParticles({ theme, running }: { theme: GameTheme; running: boolean }) {
@@ -421,9 +423,9 @@ export function ThemeParticles({ theme, running }: { theme: GameTheme; running: 
     let h = 0;
     const resize = () => {
       const box = backCanvas.getBoundingClientRect();
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
       w = box.width;
       h = box.height;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2, Math.sqrt(MAX_CANVAS_PIXELS / Math.max(1, w * h)));
       for (const [canvas, ctx] of [
         [backCanvas, backCtx],
         [frontCanvas, frontCtx],
@@ -452,8 +454,9 @@ export function ThemeParticles({ theme, running }: { theme: GameTheme; running: 
       last = now;
       const t = now / 1000;
       const current = themeRef.current;
-      // Narrow sections (phones) get proportionally fewer particles.
-      const density = Math.min(1, Math.max(0.35, w / 1600));
+      // Narrow sections (phones) get proportionally fewer particles, taller ones more, so
+      // the screen looks equally busy wherever you are on the stage.
+      const density = Math.min(1, Math.max(0.35, w / 1600)) * Math.max(1, h / BASE_HEIGHT);
 
       // A freshly shown theme starts already in motion rather than from an empty screen.
       if (seeded !== current) {
@@ -504,8 +507,12 @@ export function ThemeParticles({ theme, running }: { theme: GameTheme; running: 
 
   return (
     <>
-      <canvas ref={back} className={styles.particlesBack} aria-hidden="true" />
-      <canvas ref={front} className={styles.particlesFront} aria-hidden="true" />
+      <div className={styles.particlesBack} aria-hidden="true">
+        <canvas ref={back} className={styles.canvas} />
+      </div>
+      <div className={styles.particlesFront} aria-hidden="true">
+        <canvas ref={front} className={styles.canvas} />
+      </div>
     </>
   );
 }

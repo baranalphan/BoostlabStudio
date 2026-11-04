@@ -1,12 +1,274 @@
-@import "tailwindcss";
+/*
+ * Base reset: Tailwind v4's preflight, inlined. The site styles everything with CSS
+ * Modules and uses none of Tailwind's utilities, so only this layer was ever in play.
+ * Being layered, any unlayered rule below or in a module still wins over it.
+ */
+@layer base {
+  /* Newer pseudo-elements get rules of their own throughout, so a browser that doesn't
+     know one drops just that rule rather than the whole selector list. */
+  *,
+  ::after,
+  ::before,
+  ::backdrop {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    border: 0 solid;
+  }
+
+  ::file-selector-button {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    border: 0 solid;
+  }
+
+  html,
+  :host {
+    line-height: 1.5;
+    -webkit-text-size-adjust: 100%;
+    tab-size: 4;
+    font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+      "Segoe UI Symbol", "Noto Color Emoji";
+    font-feature-settings: normal;
+    font-variation-settings: normal;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  hr {
+    height: 0;
+    color: inherit;
+    border-top-width: 1px;
+  }
+
+  abbr:where([title]) {
+    -webkit-text-decoration: underline dotted;
+    text-decoration: underline dotted;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-size: inherit;
+    font-weight: inherit;
+  }
+
+  a {
+    color: inherit;
+    -webkit-text-decoration: inherit;
+    text-decoration: inherit;
+  }
+
+  b,
+  strong {
+    font-weight: bolder;
+  }
+
+  code,
+  kbd,
+  samp,
+  pre {
+    font-family: var(--font-mono);
+    font-feature-settings: normal;
+    font-variation-settings: normal;
+    font-size: 1em;
+  }
+
+  small {
+    font-size: 80%;
+  }
+
+  sub,
+  sup {
+    font-size: 75%;
+    line-height: 0;
+    position: relative;
+    vertical-align: baseline;
+  }
+
+  sub {
+    bottom: -0.25em;
+  }
+
+  sup {
+    top: -0.5em;
+  }
+
+  table {
+    text-indent: 0;
+    border-color: inherit;
+    border-collapse: collapse;
+  }
+
+  :-moz-focusring {
+    outline: auto;
+  }
+
+  progress {
+    vertical-align: baseline;
+  }
+
+  summary {
+    display: list-item;
+  }
+
+  ol,
+  ul,
+  menu {
+    list-style: none;
+  }
+
+  img,
+  svg,
+  video,
+  canvas,
+  audio,
+  iframe,
+  embed,
+  object {
+    display: block;
+    vertical-align: middle;
+  }
+
+  img,
+  video {
+    max-width: 100%;
+    height: auto;
+  }
+
+  button,
+  input,
+  select,
+  optgroup,
+  textarea {
+    font: inherit;
+    font-feature-settings: inherit;
+    font-variation-settings: inherit;
+    letter-spacing: inherit;
+    color: inherit;
+    border-radius: 0;
+    background-color: transparent;
+    opacity: 1;
+  }
+
+  ::file-selector-button {
+    font: inherit;
+    font-feature-settings: inherit;
+    font-variation-settings: inherit;
+    letter-spacing: inherit;
+    color: inherit;
+    border-radius: 0;
+    background-color: transparent;
+    opacity: 1;
+  }
+
+  :where(select:is([multiple], [size])) optgroup {
+    font-weight: bolder;
+  }
+
+  :where(select:is([multiple], [size])) optgroup option {
+    padding-inline-start: 20px;
+  }
+
+  ::file-selector-button {
+    margin-inline-end: 4px;
+  }
+
+  ::placeholder {
+    opacity: 1;
+  }
+
+  @supports (not (-webkit-appearance: -apple-pay-button)) or (contain-intrinsic-size: 1px) {
+    ::placeholder {
+      color: currentcolor;
+    }
+    @supports (color: color-mix(in lab, red, red)) {
+      ::placeholder {
+        color: color-mix(in oklab, currentcolor 50%, transparent);
+      }
+    }
+  }
+
+  textarea {
+    resize: vertical;
+  }
+
+  ::-webkit-search-decoration {
+    -webkit-appearance: none;
+  }
+
+  ::-webkit-date-and-time-value {
+    min-height: 1lh;
+    text-align: inherit;
+  }
+
+  ::-webkit-datetime-edit {
+    display: inline-flex;
+  }
+
+  ::-webkit-datetime-edit-fields-wrapper {
+    padding: 0;
+  }
+
+  ::-webkit-datetime-edit,
+  ::-webkit-datetime-edit-year-field {
+    padding-block: 0;
+  }
+
+  ::-webkit-datetime-edit-day-field,
+  ::-webkit-datetime-edit-month-field {
+    padding-block: 0;
+  }
+
+  ::-webkit-datetime-edit-hour-field,
+  ::-webkit-datetime-edit-minute-field {
+    padding-block: 0;
+  }
+
+  ::-webkit-datetime-edit-millisecond-field,
+  ::-webkit-datetime-edit-second-field {
+    padding-block: 0;
+  }
+
+  ::-webkit-datetime-edit-meridiem-field {
+    padding-block: 0;
+  }
+
+  ::-webkit-calendar-picker-indicator {
+    line-height: 1;
+  }
+
+  :-moz-ui-invalid {
+    box-shadow: none;
+  }
+
+  button,
+  input:where([type="button"], [type="reset"], [type="submit"]) {
+    appearance: button;
+  }
+
+  ::file-selector-button {
+    appearance: button;
+  }
+
+  ::-webkit-inner-spin-button,
+  ::-webkit-outer-spin-button {
+    height: auto;
+  }
+
+  [hidden]:where(:not([hidden="until-found"])) {
+    display: none !important;
+  }
+}
 
 /*
  * Boostlab design system.
  *
- * Values recovered verbatim from the source's SSR'd styled-components stylesheet
- * (see docs/research/boostlab/page-brief.md). Everything fluid interpolates against
- * V = min(100vw, 100vh * 16/9), exactly as the source does, so sizes shrink on short
- * viewports as well as narrow ones.
+ * Everything fluid interpolates against V = min(100vw, 100vh * 16/9), so sizes shrink
+ * on short viewports as well as narrow ones.
  */
 
 @font-face {
@@ -71,19 +333,10 @@
   --dark-white: #fafbfd;
   --black: #000000;
   --boostlab-black: #000000;
-  --prize-purple: #c74fff;
-  --dark-prize-purple: #4c0070;
-  --cooldown-grey: #9fafbd;
-  --dark-cooldown-grey: #374b5c;
-  --overdrive-blue: #397cff;
-  --dark-overdrive-blue: #002b7d;
-  --soft-blue: #e9f4fb;
-  --pay-green: #a1ff4f;
-  --dark-pay-green: #295500;
+  --accent-purple: #c74fff;
+  --accent-blue: #397cff;
   --dark-grey-1: #373737;
   --dark-grey-2: #272727;
-  --light-grey-1: #d9d9d9;
-  --light-grey-2: #efefef;
   --light-grey-3: #fafafa;
 
   /* Fonts */
@@ -91,7 +344,7 @@
   --font-body: "PPNeueMontreal", "PPNeueMontreal Fallback", sans-serif;
   --font-mono: "PPNeueMontrealMono", "PPNeueMontrealMono Fallback", monospace;
 
-  /* Spacing — spacing(m) and spacing(l) from the source's spacing scale. */
+  /* Spacing */
   --space-xs: 0.5rem;
   --space-s: 1rem;
   --space-m: clamp(
@@ -104,8 +357,6 @@
     calc(5rem + 10 * (var(--v) - 76.8rem) / 672),
     clamp(6rem, calc(var(--v) / 1920 * 60), 6.25rem)
   );
-  --space-xl: 8rem;
-  --radius-s: 0.5rem;
   --radius-l: clamp(
     0.5rem,
     calc(0.5rem + 5 * (var(--v) - 40.2rem) / 366),
@@ -116,12 +367,13 @@
   --container-max: 196rem;
   --container-pad: min(20px, max(15px, calc(15px + 5 * ((var(--v) - 402px) / 366))));
 
-  /* Easings used across the source */
+  /* Easings */
   --ease-split: cubic-bezier(0.2, 0.715, 0.205, 0.99);
   --ease-slide: cubic-bezier(0.835, 0.12, 0.225, 0.77);
   --ease-back: cubic-bezier(0.175, 0.885, 0.32, 1.275);
 
-  /* Type scale — see page-brief.md for the two-stop fluid formula. */
+  /* Type scale: fluid between a phone (402px) and a tablet (768px) stop, then up to
+     desktop in the media query below. */
   --fs-h1: min(170px, max(86px, calc(86px + 84 * ((var(--v) - 402px) / 366))));
   --fs-h2: min(100px, max(75px, calc(75px + 25 * ((var(--v) - 402px) / 366))));
   --fs-h3: min(75px, max(55px, calc(55px + 20 * ((var(--v) - 402px) / 366))));

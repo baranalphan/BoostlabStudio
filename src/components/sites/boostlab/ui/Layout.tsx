@@ -28,12 +28,12 @@ export function Grid({
   );
 }
 
-type SpacingToken = "xs" | "s" | "m" | "l" | "xl";
-const spacingTokens: SpacingToken[] = ["xs", "s", "m", "l", "xl"];
+type SpacingToken = "xs" | "s" | "m" | "l";
+const spacingTokens: SpacingToken[] = ["xs", "s", "m", "l"];
 
 /**
- * Vertical rhythm element. `size` maps onto the source's spacing scale, or takes a
- * literal rem length for the few spacers the source sets off-scale.
+ * Vertical rhythm element. `size` maps onto the --space-* scale in globals.css, or takes
+ * a literal rem length for the odd spacer that sits off-scale.
  */
 export function Spacer({ size = "m" }: { size?: SpacingToken | `${number}rem` }) {
   const minHeight = spacingTokens.includes(size as SpacingToken)

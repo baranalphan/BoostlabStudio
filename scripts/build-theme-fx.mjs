@@ -324,25 +324,20 @@ async function sprite(file, out, { key, maxSide, pad = 40, isolate = false, conv
   await writeWebp(raw, out, maxSide);
 }
 
-/** Wide backdrop for desktop plus a centred portrait crop for phones. */
+/**
+ * The portrait (4:5) backdrop behind the games page's showreel and "Our games" together.
+ * Kept at its source size so it is never upscaled; phones show it fixed to the viewport.
+ */
 async function backdrop(file, dir) {
-  const bg = sharp(path.join(SRC, file));
-  await bg.clone().resize({ width: 2560 }).webp({ quality: 80, effort: 6 }).toFile(path.join(dir, "bg-wide.webp"));
-  const { width, height } = await bg.metadata();
-  const tallW = Math.round((height * 9) / 16);
-  await bg
-    .clone()
-    .extract({ left: Math.round((width - tallW) / 2), top: 0, width: tallW, height })
-    .webp({ quality: 80, effort: 6 })
-    .toFile(path.join(dir, "bg-tall.webp"));
-  console.log(`${dir}/bg-wide.webp, bg-tall.webp`);
+  await sharp(path.join(SRC, file)).webp({ quality: 84, effort: 6 }).toFile(path.join(dir, "bg.webp"));
+  console.log(`${dir}/bg.webp`);
 }
 
 // ---- Pyramid Diggers: desert ----
 {
   const dir = path.join(OUT, "desert");
   await fs.mkdir(dir, { recursive: true });
-  await backdrop("PyramidDiggers/Assets/pyramidBG.jpeg", dir);
+  await backdrop("PyramidDiggers/Assets/pyramidNewBG.png", dir);
   for (const [n, name] of [
     [1, "coin"],
     [2, "ankh"],
@@ -360,7 +355,7 @@ async function backdrop(file, dir) {
 {
   const dir = path.join(OUT, "reef");
   await fs.mkdir(dir, { recursive: true });
-  await backdrop("IdleReef/Assets/idlereefBG.png", dir);
+  await backdrop("IdleReef/Assets/idlereefNewBG.png", dir);
   // Real transparency already: trim and resize only.
   const fish = (await fs.readdir(path.join(SRC, "IdleReef/Fishs"))).filter((f) => f.endsWith(".png"));
   for (const file of fish) {
@@ -378,7 +373,7 @@ async function backdrop(file, dir) {
 {
   const dir = path.join(OUT, "city");
   await fs.mkdir(dir, { recursive: true });
-  await backdrop("SinSim/Assets/pimpBG.png", dir);
+  await backdrop("SinSim/Assets/pimpNewBG.png", dir);
   // Coins, the round tablets and the diamond keep a pale floor shadow the white key can't
   // tell from the background, so it is cut off below the item.
   const items = [

@@ -5,8 +5,9 @@ import { cn } from "@/lib/utils";
 import styles from "./Reveal.module.css";
 
 /**
- * The source's Animate wrapper: content fades (or slides up out of a clipped box) the
- * first time it enters the viewport, on the same easings as its other reveals.
+ * Content fades (or slides up out of a clipped box) the first time it enters the
+ * viewport, on the same easings as the site's other reveals. "rise" is
+ * the slide without the clip, for things that grow or glow past their box (logos).
  */
 export function Reveal({
   children,
@@ -16,7 +17,7 @@ export function Reveal({
 }: {
   children: React.ReactNode;
   delay?: number;
-  mode?: "fade" | "slide";
+  mode?: "fade" | "slide" | "rise";
   className?: string;
 }) {
   const ref = useRef<HTMLSpanElement>(null);
@@ -49,7 +50,7 @@ export function Reveal({
       data-shown={shown ? "true" : "false"}
       style={{ "--delay": `${delay}s` } as React.CSSProperties}
     >
-      <span className={mode === "slide" ? styles.slide : styles.fade}>{children}</span>
+      <span className={mode === "fade" ? styles.fade : styles[mode]}>{children}</span>
     </span>
   );
 }

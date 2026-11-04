@@ -15,8 +15,8 @@
   margin-bottom: var(--space-m);
 }
 
-/* The source puts the label and heading in a narrow grid item (12 / 8 / 5 columns),
-   which is what makes "Latest from Boostlab" break after "Boostlab". */
+/* The label and heading sit in a narrow grid item (12 / 8 / 5 columns), which sets
+   where "Latest from Boostlab" wraps. */
 .titleColumn {
   grid-column: 1 / -1;
 }
