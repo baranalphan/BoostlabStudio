@@ -17,7 +17,8 @@ const clamp = (x: number) => Math.min(1, Math.max(0, x));
 /**
  * "Our games" as a journey: the section pins to the screen and scrolling travels from
  * one game's chapter to the next, each with its logo, line, blurb and stills. Every game
- * gets the same screen's height of scrolling, counted from when the stage comes into view. While the journey holds the screen it decides
+ * gets a full screen's height of scrolling while the stage is pinned; the first game also
+ * shows while the stage slides up into view. While the journey holds the screen it decides
  * which game the whole stage shows, so the backdrop and its particles change as you
  * scroll: reef, then desert, then city.
  */
@@ -43,12 +44,12 @@ export function GamesJourney({
     const update = () => {
       const rect = el.getBoundingClientRect();
       const vh = window.innerHeight;
-      // The journey runs from the moment the track comes up into view until it lets go
-      // of the screen: the whole track height, one equal share per game. The first share
-      // is the stage sliding up into view, so the first game neither waits on an empty
-      // stage nor gets that slide on top of its own share.
+      // The chapters share the scrolling while the stage is pinned (track top at the top
+      // of the screen until its bottom reaches the bottom), one equal share per game. The
+      // first game is already on while the stage slides up into view, so it never waits
+      // on an empty stage, and its own share only starts once the stage holds still.
       const inView = rect.top < vh && rect.bottom > 0;
-      const progress = clamp((vh - rect.top) / Math.max(1, rect.height));
+      const progress = clamp(-rect.top / Math.max(1, rect.height - vh));
       const raw = progress * COUNT;
       const index = inView ? Math.min(COUNT - 1, Math.floor(raw)) : -1;
       // How far through the current chapter (0–1): drives the stills' parallax.

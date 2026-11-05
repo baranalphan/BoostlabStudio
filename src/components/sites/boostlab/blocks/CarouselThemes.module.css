@@ -64,46 +64,32 @@
   opacity: 1;
 }
 
-/* The painting (from scripts/build-theme-fx.mjs), unblurred, with a bloom on top. */
-.photo {
-  position: absolute;
-  inset: 0;
-  background-image: var(--bg);
-  background-repeat: no-repeat;
-  background-position: 50% calc(var(--pan, 0.3) * 100%);
-  background-size: cover;
-  filter: saturate(1.08);
+/* A scene faded out keeps still: its looping light effects stop running unseen. */
+.scene:not([data-on="true"]) * {
+  animation-play-state: paused;
 }
 
 /*
- * Bloom, in two passes of the same painting screened over itself (both inherit its
- * background and size): a tight one so lights glow into the dark right around them, and
- * a wide, faint one that lifts the whole scene into a soft dreamy haze.
+ * The painting (from scripts/build-theme-fx.mjs, bloom baked in; the image fills this
+ * box), sized to cover the frame like background-size: cover and centred across it. The pan moves it with a
+ * transform rather than background-position, so scrolling only shifts an already painted
+ * layer: (100svh - 100%) is how much taller than the screen it is.
  */
-.photo::before,
-.photo::after {
-  content: "";
+.photo {
+  --ratio: calc(1856 / 2304);
+
   position: absolute;
-  inset: 0;
-  background: inherit;
-  mix-blend-mode: screen;
-  pointer-events: none;
-}
-
-.photo::after {
-  filter: blur(22px) brightness(1.35);
-  opacity: 0.45;
-}
-
-.photo::before {
-  filter: blur(80px) brightness(1.25) saturate(1.3);
-  opacity: 0.28;
+  top: 0;
+  left: 50%;
+  width: max(100%, calc(100svh * var(--ratio)));
+  aspect-ratio: 1856 / 2304;
+  transform: translate(-50%, calc(var(--pan, 0.3) * (100svh - 100%)));
+  will-change: transform;
 }
 
 /* ---- Idle Reef: inside an aquarium ---- */
 
 .reef {
-  --bg: url("/sites/boostlab/images/fx/reef/bg.webp");
   background-color: #04213a;
 }
 
@@ -129,14 +115,12 @@
 /* ---- Pyramid Diggers: desert at sunset ---- */
 
 .desert {
-  --bg: url("/sites/boostlab/images/fx/desert/bg.webp");
   background-color: #2a1208;
 }
 
 /* ---- Sins Simulator: crime city at night ---- */
 
 .city {
-  --bg: url("/sites/boostlab/images/fx/city/bg.webp");
   background-color: #05040a;
 }
 

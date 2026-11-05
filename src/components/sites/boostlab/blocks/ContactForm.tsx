@@ -80,27 +80,23 @@ export function ContactForm() {
               <SplitText>{supportContact.description}</SplitText>
             </p>
             <Spacer size="m" />
+            {/* The topics and the address are there from the start, not revealed on scroll:
+                they sit low on the first screen, where a scroll reveal left them hidden
+                until the visitor scrolled. */}
             <ul className={styles.topics}>
-              {/* The chips rise in one after another. */}
-              {supportContact.topics.map((topic, i) => (
+              {supportContact.topics.map((topic) => (
                 <li key={topic}>
-                  <Reveal mode="slide" delay={0.15 + i * 0.06}>
-                    <span className={styles.topic}>{topic}</span>
-                  </Reveal>
+                  <span className={styles.topic}>{topic}</span>
                 </li>
               ))}
             </ul>
 
             {/* Pinned to the bottom of the column so it lines up with the send button. */}
             <div className={styles.direct}>
-              <Reveal mode="slide">
-                <p className={styles.label}>{supportContact.emailLabel}</p>
-              </Reveal>
-              <Reveal mode="slide" delay={0.08}>
-                <a className={styles.mail} href={`mailto:${supportContact.email}`}>
-                  {supportContact.email}
-                </a>
-              </Reveal>
+              <p className={styles.label}>{supportContact.emailLabel}</p>
+              <a className={styles.mail} href={`mailto:${supportContact.email}`}>
+                {supportContact.email}
+              </a>
             </div>
           </div>
 

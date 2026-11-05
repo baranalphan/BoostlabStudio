@@ -26,6 +26,7 @@ const NAV_GAP = "0.3rem";
  */
 export function GamesStage() {
   const root = useRef<HTMLDivElement>(null);
+  const backdrop = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
   // The journey holds the screen: the reel waits.
   const [journeying, setJourneying] = useState(false);
@@ -61,13 +62,16 @@ export function GamesStage() {
 
   useEffect(() => {
     const node = root.current;
-    if (!node) return;
+    const frame = backdrop.current;
+    if (!node || !frame) return;
     // Runs straight in the scroll event (see GamesJourney): one measurement, one write.
+    // The pan goes on the backdrop's frame, not the stage: a custom property set on the
+    // stage would restyle every element on the page on each scroll frame.
     const update = () => {
       const rect = node.getBoundingClientRect();
       const span = Math.max(1, rect.height - window.innerHeight);
       const progress = Math.min(1, Math.max(0, -rect.top / span));
-      node.style.setProperty("--pan", (PAN_FROM + progress * (1 - PAN_FROM)).toFixed(4));
+      frame.style.setProperty("--pan", (PAN_FROM + progress * (1 - PAN_FROM)).toFixed(4));
     };
     update();
     window.addEventListener("scroll", update, { passive: true });
@@ -82,7 +86,7 @@ export function GamesStage() {
 
   return (
     <div ref={root} className={styles.main}>
-      <ThemeBackdrop theme={game.theme} />
+      <ThemeBackdrop ref={backdrop} theme={game.theme} />
       <ThemeParticles theme={game.theme} running={running} />
       <Showreel
         headingLevel="h1"

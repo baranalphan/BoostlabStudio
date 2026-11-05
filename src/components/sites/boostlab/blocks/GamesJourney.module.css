@@ -56,12 +56,12 @@
 
 /* ---- the track: one screen of scrolling per game, with the stage pinned inside ---- */
 
-/* One screen of scrolling per game: the first while the stage slides up into view, the
-   rest while it is pinned. */
+/* One screen of scrolling per game while the stage is pinned; the extra screen is the
+   pin's own height (it stays stuck for the track's height minus its own). */
 .track {
   position: relative;
-  height: calc(var(--n) * 100vh);
-  height: calc(var(--n) * 100svh);
+  height: calc((var(--n) + 1) * 100vh);
+  height: calc((var(--n) + 1) * 100svh);
 }
 
 /* Not clipped: the glow behind a chapter's stills would otherwise end in a hard line at

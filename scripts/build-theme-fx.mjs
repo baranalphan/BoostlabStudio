@@ -324,12 +324,54 @@ async function sprite(file, out, { key, maxSide, pad = 40, isolate = false, conv
   await writeWebp(raw, out, maxSide);
 }
 
+/** CSS saturate(s) as a colour matrix. */
+const saturateMatrix = (s) => [
+  [0.213 + 0.787 * s, 0.715 - 0.715 * s, 0.072 - 0.072 * s],
+  [0.213 - 0.213 * s, 0.715 + 0.285 * s, 0.072 - 0.072 * s],
+  [0.213 - 0.213 * s, 0.715 - 0.715 * s, 0.072 + 0.928 * s],
+];
+
 /**
  * The portrait (4:5) backdrop behind the games page's showreel and "Our games" together.
  * Kept at its source size so it is never upscaled; phones show it fixed to the viewport.
+ *
+ * The bloom is baked in rather than done with CSS filters: two blurred copies of the
+ * painting screened over it (a tight one so lights glow into the dark around them, a wide
+ * faint one for a soft haze), then a touch more saturation. As live CSS blurs over the
+ * whole screen they were re-rendered on every scroll frame as the painting panned.
  */
 async function backdrop(file, dir) {
-  await sharp(path.join(SRC, file)).webp({ quality: 84, effort: 6 }).toFile(path.join(dir, "bg.webp"));
+  const src = path.join(SRC, file);
+  const read = (img) => img.removeAlpha().raw().toBuffer({ resolveWithObject: true });
+  const { data: base, info } = await read(sharp(src));
+  const { data: tight } = await read(sharp(src).blur(22));
+  const { data: wide } = await read(sharp(src).blur(80));
+
+  const clamp = (x) => Math.min(1, Math.max(0, x));
+  const haze = saturateMatrix(1.3);
+  const finish = saturateMatrix(1.08);
+  const out = Buffer.alloc(base.length);
+  const px = [0, 0, 0];
+  for (let i = 0; i < base.length; i += 3) {
+    for (let c = 0; c < 3; c++) px[c] = base[i + c] / 255;
+    // Wide pass: blur(80px) brightness(1.25) saturate(1.3), screened at 0.28.
+    for (let c = 0; c < 3; c++) {
+      const [r, g, b] = [0, 1, 2].map((k) => clamp((wide[i + k] / 255) * 1.25));
+      const s = clamp(haze[c][0] * r + haze[c][1] * g + haze[c][2] * b);
+      px[c] += 0.28 * s * (1 - px[c]);
+    }
+    // Tight pass: blur(22px) brightness(1.35), screened at 0.45.
+    for (let c = 0; c < 3; c++) {
+      const s = clamp((tight[i + c] / 255) * 1.35);
+      px[c] += 0.45 * s * (1 - px[c]);
+    }
+    for (let c = 0; c < 3; c++) {
+      out[i + c] = Math.round(clamp(finish[c][0] * px[0] + finish[c][1] * px[1] + finish[c][2] * px[2]) * 255);
+    }
+  }
+  await sharp(out, { raw: { width: info.width, height: info.height, channels: 3 } })
+    .webp({ quality: 84, effort: 6 })
+    .toFile(path.join(dir, "bg.webp"));
   console.log(`${dir}/bg.webp`);
 }
 

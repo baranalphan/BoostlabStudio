@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
 import type { GameTheme } from "@/types/boostlab";
 import styles from "./CarouselThemes.module.css";
 
@@ -11,28 +12,46 @@ const FX = "/sites/boostlab/images/fx";
 /* Built by scripts/build-theme-fx.mjs from the art in BoostlabStudioAssets/Games.       */
 /* ------------------------------------------------------------------------------------ */
 
-/** The painting, softly bloomed. */
-function Photo() {
-  return <span className={styles.photo} />;
+/**
+ * The painting (bloom baked in), as an optimised image: phones get a smaller one, and
+ * browsers that can take AVIF get that. It covers the screen (see .photo), so it is as
+ * wide as the screen, or 2304 / 1856 of its height on screens narrower than the painting.
+ */
+function Photo({ theme, first }: { theme: GameTheme; first: boolean }) {
+  return (
+    <span className={styles.photo}>
+      <Image
+        src={`${FX}/${theme}/bg.webp`}
+        alt=""
+        fill
+        sizes="(max-aspect-ratio: 1856/2304) 81vh, 100vw"
+        // The scene on screen first is the page's largest image.
+        loading={first ? "eager" : "lazy"}
+        fetchPriority={first ? "high" : "low"}
+      />
+    </span>
+  );
 }
 
-function Reef() {
+type SceneProps = { first: boolean };
+
+function Reef({ first }: SceneProps) {
   return (
     <>
-      <Photo />
+      <Photo theme="reef" first={first} />
       <span className={styles.reefCaustics} />
     </>
   );
 }
 
-function Desert() {
-  return <Photo />;
+function Desert({ first }: SceneProps) {
+  return <Photo theme="desert" first={first} />;
 }
 
-function City() {
+function City({ first }: SceneProps) {
   return (
     <>
-      <Photo />
+      <Photo theme="city" first={first} />
       <span className={styles.neon} />
       <span className={styles.sirenRed} />
       <span className={styles.sirenBlue} />
@@ -40,17 +59,47 @@ function City() {
   );
 }
 
-const SCENES: Record<GameTheme, () => React.JSX.Element> = { reef: Reef, desert: Desert, city: City };
+const SCENES: Record<GameTheme, (props: SceneProps) => React.JSX.Element> = { reef: Reef, desert: Desert, city: City };
+const THEMES = Object.keys(SCENES) as GameTheme[];
 
-export function ThemeBackdrop({ theme }: { theme: GameTheme }) {
+/**
+ * `ref` is the viewport-sized frame: GamesStage sets the painting's pan (--pan) on it.
+ *
+ * The painting on screen first is the page's largest image, so it loads with high
+ * priority, and the other scenes wait until the page has loaded: their paintings would
+ * otherwise download alongside it and slow it down.
+ */
+export function ThemeBackdrop({ theme, ref }: { theme: GameTheme; ref?: React.Ref<HTMLDivElement> }) {
+  const [first] = useState(theme);
+  const [wanted, setWanted] = useState<GameTheme[]>([theme]);
+  // A scene picked before the rest have loaded comes in straight away.
+  if (!wanted.includes(theme)) setWanted([...wanted, theme]);
+
+  useEffect(() => {
+    // Safari has no requestIdleCallback: a short timeout stands in for it.
+    const hasIdle = typeof window.requestIdleCallback === "function";
+    let pending = 0;
+    const all = () => setWanted(THEMES);
+    const later = () => {
+      pending = hasIdle ? window.requestIdleCallback(all, { timeout: 2000 }) : window.setTimeout(all, 500);
+    };
+    if (document.readyState === "complete") later();
+    else window.addEventListener("load", later, { once: true });
+    return () => {
+      window.removeEventListener("load", later);
+      if (hasIdle) window.cancelIdleCallback(pending);
+      else window.clearTimeout(pending);
+    };
+  }, []);
+
   return (
     <div className={styles.scenes} aria-hidden="true">
-      <div className={styles.frame}>
-        {(Object.keys(SCENES) as GameTheme[]).map((key) => {
+      <div ref={ref} className={styles.frame}>
+        {THEMES.map((key) => {
           const Scene = SCENES[key];
           return (
             <div key={key} className={`${styles.scene} ${styles[key]}`} data-on={key === theme}>
-              <Scene />
+              {wanted.includes(key) ? <Scene first={key === first} /> : null}
             </div>
           );
         })}
@@ -151,7 +200,10 @@ type Sprites = {
 
 const MAX_PARTICLES = 700;
 /** Canvas pixels per layer, so a large, high-density screen doesn't get a huge canvas. */
-const MAX_CANVAS_PIXELS = 8_000_000;
+const MAX_CANVAS_PIXELS = 4_000_000;
+/** Pixel density cap: moving decoration doesn't need full retina sharpness, and two
+ *  screen-sized canvases redrawn every frame cost in proportion to their pixels. */
+const MAX_DPR = 1.5;
 /** The section height the spawn rates were tuned for; taller stages spawn proportionally more. */
 const BASE_HEIGHT = 1300;
 const cache = new Map<GameTheme, Sprites>();
@@ -161,7 +213,7 @@ function getSprites(theme: GameTheme): Sprites {
   let set = cache.get(theme);
   if (!set) {
     const load = (file: string) => {
-      const img = new Image();
+      const img = new window.Image();
       img.decoding = "async";
       img.src = `${FX}/${file}.webp`;
       return img;
@@ -289,6 +341,54 @@ function drawSprite(ctx: CanvasRenderingContext2D, img: HTMLImageElement, size: 
   ctx.drawImage(img, -w / 2, -h / 2, w, h);
 }
 
+/** Longest side of a sprite in its pre-rendered glow, and the room left round it for the glow. */
+const GLOW_SPRITE = 128;
+const GLOW_PAD = 40;
+const glows = new Map<HTMLImageElement, Map<string, HTMLCanvasElement>>();
+
+/**
+ * A sprite with its glow, rendered once and then reused. Canvas shadowBlur is costly on
+ * every draw (a blur pass per item per frame), and a shower of glowing coins made the
+ * page stutter; drawing a ready-made glow is a plain image copy.
+ */
+function glowOf(img: HTMLImageElement, color: string, blur: number) {
+  let byColor = glows.get(img);
+  if (!byColor) glows.set(img, (byColor = new Map()));
+  const key = `${color}/${blur}`;
+  let canvas = byColor.get(key);
+  if (!canvas) {
+    const ratio = img.naturalWidth / img.naturalHeight;
+    const w = ratio >= 1 ? GLOW_SPRITE : GLOW_SPRITE * ratio;
+    const h = ratio >= 1 ? GLOW_SPRITE / ratio : GLOW_SPRITE;
+    canvas = document.createElement("canvas");
+    canvas.width = Math.ceil(w + GLOW_PAD * 2);
+    canvas.height = Math.ceil(h + GLOW_PAD * 2);
+    const ctx = canvas.getContext("2d");
+    if (ctx) {
+      ctx.shadowColor = color;
+      ctx.shadowBlur = blur;
+      ctx.drawImage(img, GLOW_PAD, GLOW_PAD, w, h);
+    }
+    byColor.set(key, canvas);
+  }
+  return canvas;
+}
+
+/** drawSprite for a sprite with a glow: the sprite itself still comes out `size` long. */
+function drawGlowSprite(
+  ctx: CanvasRenderingContext2D,
+  img: HTMLImageElement,
+  size: number,
+  color: string,
+  blur: number,
+) {
+  const glow = glowOf(img, color, blur);
+  const scale = size / GLOW_SPRITE;
+  const w = glow.width * scale;
+  const h = glow.height * scale;
+  ctx.drawImage(glow, -w / 2, -h / 2, w, h);
+}
+
 function draw(ctx: CanvasRenderingContext2D, p: Particle, t: number, art: Sprites) {
   ctx.globalAlpha = Math.max(0, p.alpha);
   if (p.kind === "bubble") {
@@ -332,8 +432,9 @@ function draw(ctx: CanvasRenderingContext2D, p: Particle, t: number, art: Sprite
       ctx.scale(Math.cos(t * p.spin * 0.6 + p.phase), 1);
     }
     if (p.front && spec?.glow) {
-      ctx.shadowColor = spec.glow;
-      ctx.shadowBlur = 16;
+      drawGlowSprite(ctx, img, p.size, spec.glow, 20);
+      ctx.restore();
+      return;
     }
   } else if (p.kind === "fish") {
     // Point the art the way it swims, and wiggle a little as the tail beats.
@@ -346,8 +447,9 @@ function draw(ctx: CanvasRenderingContext2D, p: Particle, t: number, art: Sprite
     // translucent body readable against the blue.
     const pulse = Math.sin(t * 2.2 + p.phase);
     ctx.scale(1 + pulse * 0.06, 1 - pulse * 0.08);
-    ctx.shadowColor = "rgba(255, 170, 230, 0.55)";
-    ctx.shadowBlur = 18;
+    drawGlowSprite(ctx, img, p.size, "rgba(255, 170, 230, 0.55)", 12);
+    ctx.restore();
+    return;
   } else {
     ctx.scale(p.dir, 1);
     ctx.rotate(Math.sin(t * 1.1 + p.phase) * 0.08);
@@ -425,7 +527,7 @@ export function ThemeParticles({ theme, running }: { theme: GameTheme; running: 
       const box = backCanvas.getBoundingClientRect();
       w = box.width;
       h = box.height;
-      const dpr = Math.min(window.devicePixelRatio || 1, 2, Math.sqrt(MAX_CANVAS_PIXELS / Math.max(1, w * h)));
+      const dpr = Math.min(window.devicePixelRatio || 1, MAX_DPR, Math.sqrt(MAX_CANVAS_PIXELS / Math.max(1, w * h)));
       for (const [canvas, ctx] of [
         [backCanvas, backCtx],
         [frontCanvas, frontCtx],

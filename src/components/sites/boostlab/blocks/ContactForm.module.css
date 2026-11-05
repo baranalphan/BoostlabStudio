@@ -56,7 +56,6 @@
 }
 
 /* Static tags in the button chips' mono caps, at the same type size as the buttons. */
-/* Block, so its padding and border stay inside the clip of the reveal around it. */
 .topic {
   display: block;
   padding: 0.7rem 0.9rem;
@@ -109,10 +108,14 @@
   font-size: var(--fs-body);
   line-height: 1.33;
   letter-spacing: 0.01em;
-  color: rgb(255 255 255 / 0.3);
+  /* Muted, but at 0.55 still clear of the 4.5:1 contrast readable text needs on black
+     (0.3 was 2.5:1). */
+  color: rgb(255 255 255 / 0.55);
 }
 
+/* Only as wide as the address, so the link doesn't span the column. */
 .mail {
+  align-self: flex-start;
   font-family: var(--font-mono);
   font-weight: 500;
   font-size: var(--fs-cap);

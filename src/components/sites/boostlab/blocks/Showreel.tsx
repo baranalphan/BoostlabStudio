@@ -16,6 +16,9 @@ const stillOf = (game: (typeof games)[number]) => game.shots?.[0] ?? game.poster
 /** How long a game without a video stays on stage before the next one comes in. */
 const STILL_MS = 6000;
 
+/** Time between ambilight updates, in ms. */
+const AMBI_MS = 100;
+
 /** Gap between the screen's edge and the progress light that runs round it, in px. */
 const TRACE_GAP = 9;
 /** Resting pose of the screen (degrees): turned a little towards the copy on its left. */
@@ -27,9 +30,13 @@ const FOLLOW = 0.1;
 
 /**
  * The showreel that opens the games page. A row of game logos sits beside a tilted
- * 16:9 screen: hovering or clicking a logo puts that game's clip on screen, and a light
- * runs once round the screen's edge before the reel moves on to the next game. Games
- * without a clip show their artwork for STILL_MS instead.
+ * 16:9 screen: hovering or clicking a logo puts that game on screen.
+ *
+ * Nothing plays until the visitor asks: the screen shows the game's still with a play
+ * button, and no clip is downloaded before then. Once they press play the reel runs as a
+ * playlist: a light runs round the screen's edge as the clip plays, and when it ends the
+ * next game comes in and plays (games without a clip show their artwork for STILL_MS).
+ * Pausing stops the reel where it is.
  *
  * The selected game is owned by GamesStage, which shares it with the "Our games"
  * journey and the backdrop; at the top of the page this reel is their clock.
@@ -82,17 +89,44 @@ export function Showreel({
   // Clips that failed to load (e.g. not uploaded yet) fall back to the poster and its timer.
   const [broken, setBroken] = useState<number[]>([]);
   const hasVideo = (i: number) => Boolean(games[i].video) && !broken.includes(i);
-  // The game whose clip the visitor paused; picking another game plays again.
-  const [pausedIndex, setPausedIndex] = useState<number | null>(null);
-  const paused = pausedIndex === active;
-  // Clips start muted (browsers only autoplay silent video); the choice then sticks.
-  const [muted, setMuted] = useState(true);
+  // The visitor pressed play and hasn't paused since: the reel plays and moves on.
+  const [watching, setWatching] = useState(false);
+  const activeHasVideo = hasVideo(active);
+  // Games that have been on stage. Only their clips get a poster frame, so the stills of
+  // games further down the reel don't download with the page.
+  const [seen, setSeen] = useState([active]);
+  if (!seen.includes(active)) setSeen([...seen, active]);
+  // The visitor starts the clip themselves, so it may play with sound. If the browser
+  // still refuses (it may for a clip that comes on by itself later), it goes on muted.
+  const [muted, setMuted] = useState(false);
 
   useEffect(() => {
     videoRefs.current.forEach((video) => {
       if (video) video.muted = muted;
     });
   }, [muted, active]);
+
+  const playRef = useRef<HTMLButtonElement>(null);
+  const pauseRef = useRef<HTMLButtonElement>(null);
+  // Play and pause swap places; focus follows so a keyboard user isn't dropped.
+  const moveFocus = useRef(false);
+  useEffect(() => {
+    if (!moveFocus.current) return;
+    moveFocus.current = false;
+    (watching ? pauseRef : playRef).current?.focus({ preventScroll: true });
+  }, [watching]);
+
+  /** Called straight from the click, so the browser lets the clip play with sound. */
+  const watch = () => {
+    videoRefs.current[active]?.play().catch(() => {});
+    moveFocus.current = true;
+    setWatching(true);
+  };
+
+  const pause = () => {
+    moveFocus.current = true;
+    setWatching(false);
+  };
 
   const rewind = () => {
     const video = videoRefs.current[active];
@@ -143,8 +177,10 @@ export function Showreel({
 
   useEffect(() => {
     const video = videoRefs.current[active];
-    if (!live) {
+    if (!live || !watching) {
       video?.pause();
+      // The light stays where the clip stopped.
+      if (video?.duration) paintTrace(video.currentTime / video.duration);
       return;
     }
 
@@ -169,9 +205,16 @@ export function Showreel({
         frame = requestAnimationFrame(tick);
       };
       video.addEventListener("ended", onEnded);
-      // A paused clip also holds the reel: it can't reach its end.
-      if (paused) video.pause();
-      else video.play().catch(() => {});
+      video.play().catch((error: unknown) => {
+        if (!(error instanceof DOMException) || error.name !== "NotAllowedError") return;
+        if (video.muted) {
+          setWatching(false);
+          return;
+        }
+        video.muted = true;
+        setMuted(true);
+        video.play().catch(() => setWatching(false));
+      });
       frame = requestAnimationFrame(tick);
       return () => {
         cancelAnimationFrame(frame);
@@ -193,31 +236,46 @@ export function Showreel({
     };
     frame = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(frame);
-  }, [active, holding, live, paused, onSelect, paintTrace, broken]);
+  }, [active, holding, live, watching, onSelect, paintTrace, broken]);
 
   /*
    * Ambilight: the current picture, shrunk to a few dozen pixels on a canvas that is blown
    * up and blurred behind the screen, so the light around it is the clip's own colours,
    * live. Each frame only blends 10% of the new picture in, so cuts and game changes
-   * wash over smoothly instead of flashing.
+   * wash over smoothly instead of flashing. While no clip plays the picture is a still:
+   * the glow eases over to it and then stops updating.
    */
+  const ambiMoving = watching && activeHasVideo;
   useEffect(() => {
     const canvas = ambiRef.current;
     const ctx = canvas?.getContext("2d");
     if (!canvas || !ctx || !live) return;
-    if (!posters.current.length) {
-      posters.current = games.map((item) => {
-        const img = new window.Image();
-        img.src = stillOf(item);
-        return img;
-      });
+    // Each game's still is fetched the first time it is on stage (the video's poster
+    // frame is the same file, so it usually comes from the cache).
+    if (!posters.current[active]) {
+      const img = new window.Image();
+      img.src = stillOf(games[active]);
+      posters.current[active] = img;
     }
     let frame = 0;
     let first = true;
-    const draw = () => {
+    let last = 0;
+    // Updates left before a still picture counts as settled (~2 s: the old picture has
+    // faded to nothing by then).
+    let settling = 20;
+    const draw = (now: number) => {
+      if (!ambiMoving && !first && settling <= 0) return;
+      frame = requestAnimationFrame(draw);
+      // About ten updates a second: every update re-runs the large blur behind the screen,
+      // and copying a video frame into a canvas isn't free either. The blend per update is
+      // scaled to the time passed, so the glow eases at the same pace as at 60 fps
+      // (10% per 1/60 s).
+      if (!first && now - last < AMBI_MS) return;
+      const blend = 1 - Math.pow(0.9, Math.min(now - last, 500) / (1000 / 60));
+      last = now;
       const video = videoRefs.current[active];
       const poster = posters.current[active];
-      ctx.globalAlpha = first ? 1 : 0.1;
+      ctx.globalAlpha = first ? 1 : blend;
       if (video && video.readyState >= 2) {
         // Sample only what the stage shows, so a clip's baked-in bars don't dim the glow.
         const zoom = games[active].videoZoom ?? 1;
@@ -230,12 +288,14 @@ export function Showreel({
       } else if (poster.complete && poster.naturalWidth) {
         ctx.drawImage(poster, 0, 0, canvas.width, canvas.height);
         first = false;
+      } else {
+        return;
       }
-      frame = requestAnimationFrame(draw);
+      settling -= 1;
     };
     frame = requestAnimationFrame(draw);
     return () => cancelAnimationFrame(frame);
-  }, [active, live]);
+  }, [active, live, ambiMoving]);
 
   /*
    * The screen floats at a slight angle; with a mouse over it, it turns to follow the
@@ -406,10 +466,11 @@ export function Showreel({
                           item.videoZoom ? ({ "--zoom": item.videoZoom } as React.CSSProperties) : undefined
                         }
                         src={item.video}
-                        poster={stillOf(item)}
+                        poster={seen.includes(i) ? stillOf(item) : undefined}
                         muted
                         playsInline
-                        preload={i === active ? "auto" : "none"}
+                        // Nothing is fetched until the visitor presses play: the still shows.
+                        preload="none"
                         aria-label={item.poster.alt ?? undefined}
                         onError={() => setBroken((list) => (list.includes(i) ? list : [...list, i]))}
                       />
@@ -438,7 +499,24 @@ export function Showreel({
                 <span className={styles.shine} key={active} aria-hidden="true" />
                 <span className={styles.glare} aria-hidden="true" />
 
-                {hasVideo(active) ? (
+                {activeHasVideo && !watching ? (
+                  <button
+                    ref={playRef}
+                    type="button"
+                    className={styles.play}
+                    aria-label={`Play the ${game.title} video`}
+                    onClick={watch}
+                  >
+                    <span className={styles.playIcon} aria-hidden="true">
+                      <svg viewBox="0 0 24 24">
+                        <path d="M8 5.5v13l10.5-6.5z" />
+                      </svg>
+                    </span>
+                    <span className={styles.playLabel}>Watch video</span>
+                  </button>
+                ) : null}
+
+                {activeHasVideo && watching ? (
                   <div className={styles.controls}>
                     <button
                       type="button"
@@ -454,21 +532,17 @@ export function Showreel({
                         </text>
                       </svg>
                     </button>
+                    {/* Pausing stops the reel; the play button comes back to carry on. */}
                     <button
+                      ref={pauseRef}
                       type="button"
                       className={styles.control}
-                      aria-label={paused ? "Play video" : "Pause video"}
-                      onClick={() => setPausedIndex(paused ? null : active)}
+                      aria-label="Pause video"
+                      onClick={pause}
                     >
-                      {paused ? (
-                        <svg viewBox="0 0 24 24" aria-hidden="true">
-                          <path className={styles.solid} d="M8 5.5v13l10.5-6.5z" />
-                        </svg>
-                      ) : (
-                        <svg viewBox="0 0 24 24" aria-hidden="true">
-                          <path className={styles.solid} d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z" />
-                        </svg>
-                      )}
+                      <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path className={styles.solid} d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z" />
+                      </svg>
                     </button>
                     <button
                       type="button"

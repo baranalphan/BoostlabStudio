@@ -56,8 +56,8 @@ export const homeAbout = {
     mime: "video/mp4",
     alt: "We are Boostlab",
     url: `${VID}/we-are-boostlab.mp4`,
-    width: 1492,
-    height: 1920,
+    width: 1120,
+    height: 1440,
   } satisfies SiteMedia,
 };
 

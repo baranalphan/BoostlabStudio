@@ -468,6 +468,78 @@
   }
 }
 
+/* ---- play: nothing plays until the visitor asks ---- */
+
+/* The whole screen is the button; the glass disc in the middle says what it does. */
+.play {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.9rem;
+  padding: 0;
+  border: none;
+  border-radius: inherit;
+  background: radial-gradient(circle at 50% 50%, rgb(0 0 0 / 0.35), rgb(0 0 0 / 0.1) 60%);
+  color: var(--white, #fff);
+  cursor: pointer;
+}
+
+.playIcon {
+  display: grid;
+  place-items: center;
+  width: clamp(4rem, 12cqi, 6.5rem);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background-color: rgb(0 0 0 / 0.45);
+  border: 1px solid rgb(255 255 255 / 0.3);
+  box-shadow: 0 0 2.5rem color-mix(in srgb, var(--accent) 45%, transparent);
+  backdrop-filter: blur(12px);
+  transition:
+    transform 0.4s var(--ease-split),
+    background-color 0.4s var(--ease-split),
+    box-shadow 0.4s var(--ease-split);
+}
+
+.playIcon svg {
+  width: 42%;
+  height: 42%;
+  margin-left: 8%;
+  fill: currentColor;
+}
+
+.playLabel {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  text-transform: uppercase;
+  font-size: var(--fs-cap);
+  line-height: 1;
+  letter-spacing: 0.16em;
+  text-shadow: 0 0.1rem 0.8rem rgb(0 0 0 / 0.7);
+}
+
+.play:hover .playIcon {
+  transform: scale(1.08);
+  background-color: color-mix(in srgb, var(--accent) 35%, rgb(0 0 0 / 0.45));
+  box-shadow: 0 0 3.5rem color-mix(in srgb, var(--accent) 65%, transparent);
+}
+
+.play:active .playIcon {
+  transform: scale(0.96);
+}
+
+.play:focus-visible {
+  outline: none;
+}
+
+.play:focus-visible .playIcon {
+  outline: 2px solid var(--dark-white);
+  outline-offset: 4px;
+}
+
 /* ---- "coming soon" card for games without a clip yet ---- */
 
 .soon {
@@ -576,6 +648,10 @@
   .tileName,
   .layer,
   .media {
+    transition: none;
+  }
+
+  .playIcon {
     transition: none;
   }
 
