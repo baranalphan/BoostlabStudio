@@ -13,11 +13,18 @@ export function Reveal({
   children,
   delay = 0,
   mode = "fade",
+  margin = "0px 0px -10% 0px",
   className,
 }: {
   children: React.ReactNode;
   delay?: number;
   mode?: "fade" | "slide" | "rise";
+  /**
+   * How far into the viewport the content must come before it shows. The default waits
+   * until it clears the bottom tenth of the screen; content at the very end of the page
+   * (the footer) can never get that high, so it passes "0px" to show once it's in view.
+   */
+  margin?: string;
   className?: string;
 }) {
   const ref = useRef<HTMLSpanElement>(null);
@@ -37,11 +44,11 @@ export function Reveal({
           observer.disconnect();
         }
       },
-      { rootMargin: "0px 0px -10% 0px" },
+      { rootMargin: margin },
     );
     observer.observe(node);
     return () => observer.disconnect();
-  }, []);
+  }, [margin]);
 
   return (
     <span

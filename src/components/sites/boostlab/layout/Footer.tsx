@@ -29,7 +29,7 @@ export function Footer() {
             className={styles.logoImage}
           />
         </Link>
-        <Reveal mode="slide" className={styles.copyright}>
+        <Reveal mode="slide" margin="0px" className={styles.copyright}>
           <p>
             © {new Date().getFullYear()} {footer.copyright}
             {footer.legal.map((link) => (
