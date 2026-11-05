@@ -20,7 +20,7 @@ export function Footer() {
   return (
     <footer className={styles.main}>
       <Container className={styles.container}>
-        <Link href="/" aria-label="Boostlab home" className={styles.logo}>
+        <Link href="/" aria-label="Boostlab Studio home" className={styles.logo}>
           <Image
             src="/sites/boostlab/images/boost-black-outline.png"
             alt=""
@@ -32,6 +32,11 @@ export function Footer() {
         <Reveal mode="slide" className={styles.copyright}>
           <p>
             © {new Date().getFullYear()} {footer.copyright}
+            {footer.legal.map((link) => (
+              <Link key={link.url} href={link.url} className={styles.legal}>
+                {link.label}
+              </Link>
+            ))}
           </p>
         </Reveal>
         <ul className={styles.socials}>

@@ -1,6 +1,7 @@
 /**
- * All of the site's copy, links and media in one place. Images and videos are served
- * from public/sites/boostlab.
+ * All of the site's copy, links and media in one place. Images are served from
+ * public/sites/boostlab; videos are imported from src/assets/boostlab/videos so they get
+ * a hashed, long-cached URL (see next.config.ts).
  */
 
 import type {
@@ -10,9 +11,11 @@ import type {
   NewsItem,
   ShowreelGame,
 } from "@/types/boostlab";
+import weAreBoostlabVideo from "@/assets/boostlab/videos/we-are-boostlab.mp4";
+import idleReefVideo from "@/assets/boostlab/videos/idle-reef-trailer.mp4";
+import pyramidDiggersVideo from "@/assets/boostlab/videos/pyramid-diggers.mp4";
 
 const IMG = "/sites/boostlab/images";
-const VID = "/sites/boostlab/videos";
 
 /** Steam store pages, tagged with the Boostlab curator so visits are attributed to us. */
 const IDLE_REEF_STEAM = "https://store.steampowered.com/app/5188560/Idle_Reef/?curator_clanid=46610619";
@@ -33,6 +36,7 @@ export const header = {
 /** Footer social icons. Links without a `url` are shown but not clickable yet. */
 export const footer = {
   copyright: "Boostlab Studio",
+  legal: [{ label: "Terms", url: "/terms" }] satisfies SiteLink[],
   socials: [
     { label: "Instagram", icon: "instagram", url: "https://www.instagram.com/idlereef" },
     { label: "Steam", icon: "steam", url: "https://store.steampowered.com/curator/46610619" },
@@ -55,7 +59,7 @@ export const homeAbout = {
   media: {
     mime: "video/mp4",
     alt: "We are Boostlab",
-    url: `${VID}/we-are-boostlab.mp4`,
+    url: weAreBoostlabVideo,
     width: 1120,
     height: 1440,
   } satisfies SiteMedia,
@@ -90,8 +94,8 @@ export const homeNews = {
 
 /**
  * The showreel that opens the games page. To add a game's clip, drop the MP4 in
- * public/sites/boostlab/videos and set `video: `${VID}/<file>.mp4``; the poster keeps
- * showing until it loads.
+ * src/assets/boostlab/videos, import it at the top of this file and set `video` to the
+ * import; the poster keeps showing until it loads.
  */
 export const gamesShowreel = {
   label: "Showreel",
@@ -107,7 +111,7 @@ export const gamesShowreel = {
       title: "Idle Reef",
       accent: "#4cb8ff",
       theme: "reef",
-      video: `${VID}/idle-reef-trailer.mp4`,
+      video: idleReefVideo,
       icon: { url: `${IMG}/idle-reef-icon-cutout.webp`, cutout: true },
       tagline: "Your desktop. Now an aquarium.",
       blurb:
@@ -128,7 +132,7 @@ export const gamesShowreel = {
       title: "Pyramid Diggers",
       accent: "#f0a64a",
       theme: "desert",
-      video: `${VID}/pyramid-diggers.mp4`,
+      video: pyramidDiggersVideo,
       // The clip is 2:1 letterboxed to 1920 × 1080 (60 px bars top and bottom): 1080 / 960,
       // plus a hair so no dark edge row survives scaling.
       videoZoom: 1.13,
@@ -209,4 +213,67 @@ export const supportContact = {
   sending: "Sending…",
   success: "Thanks! Your message has been sent. We'll get back to you soon.",
   error: "Something went wrong and your message wasn't sent. Please try again.",
+};
+
+/* --------------------------------------------------------------------- terms */
+
+/** The Terms of Use page. Bump `updated` whenever the wording changes. */
+export const terms = {
+  kicker: "Legal",
+  title: "Terms of Use",
+  updated: "2026-11-05",
+  intro:
+    "These terms apply to boostlabgames.com (the \"site\"), run by Boostlab Studio (\"Boostlab\", \"we\", \"us\"). By using the site you agree to them. If you don't agree, please don't use the site.",
+  sections: [
+    {
+      heading: "About the site",
+      body: [
+        "The site introduces our studio and our games. We don't sell anything on it: our games are distributed through third-party stores such as Steam.",
+      ],
+    },
+    {
+      heading: "Games and purchases",
+      body: [
+        "Buying, downloading and playing our games happens on those stores and is governed by their own terms (for Steam, the Steam Subscriber Agreement) and by any licence that comes with the game.",
+        "Details of upcoming games, such as features, content and release dates, may change before launch.",
+      ],
+    },
+    {
+      heading: "Our content",
+      body: [
+        "Game names, logos, artwork, screenshots, videos, text and code on the site belong to Boostlab or its licensors. You may link to the site and share our pages, but you may not copy, sell or reuse the content commercially without our written permission, except where the law allows it.",
+        "For press, streaming or content-creator requests, get in touch through the support page.",
+      ],
+    },
+    {
+      heading: "Contacting us",
+      body: [
+        "When you send a message through the support page we receive your name, email address and message, and use them to reply to you. Please don't send anything unlawful, abusive or unsolicited advertising.",
+      ],
+    },
+    {
+      heading: "Using the site",
+      body: [
+        "Don't try to disrupt or overload the site, get into parts of it that aren't public, or use it for anything unlawful.",
+      ],
+    },
+    {
+      heading: "Links to other sites",
+      body: [
+        "The site links to services we don't run, such as Steam, Instagram and LinkedIn. Their own terms and privacy policies apply there, and we aren't responsible for their content.",
+      ],
+    },
+    {
+      heading: "No warranty",
+      body: [
+        "We work to keep the site accurate and available, but it is provided \"as is\". To the extent the law allows, we aren't liable for any loss that comes from using it or from relying on what it says.",
+      ],
+    },
+    {
+      heading: "Changes",
+      body: [
+        "We may update these terms from time to time. The date at the top shows when they last changed, and continuing to use the site means you accept the current version.",
+      ],
+    },
+  ],
 };

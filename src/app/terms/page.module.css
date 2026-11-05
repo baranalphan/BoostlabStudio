@@ -1,0 +1,53 @@
+.page {
+  color: var(--dark-white);
+}
+
+/* A comfortable reading measure, left-aligned under the header. */
+.article {
+  max-width: 72rem;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: var(--fs-h3);
+  line-height: 0.9;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.updated {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: var(--fs-cap);
+  text-transform: uppercase;
+  opacity: 0.6;
+}
+
+.section {
+  margin-top: var(--space-m);
+}
+
+.heading {
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: var(--fs-h5);
+  line-height: 1.2;
+  margin-bottom: 0.8rem;
+}
+
+.body {
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  line-height: 1.55;
+  opacity: 0.85;
+}
+
+.body + .body {
+  margin-top: 1rem;
+}
+
+.body a {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}

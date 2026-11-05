@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { GamesStage } from "@/components/sites/boostlab/blocks/GamesStage";
 import { CtaBlock } from "@/components/sites/boostlab/blocks/CtaBlock";
-import { gamesCta, gamesShowreel } from "@/components/sites/boostlab/content";
-import { SITE_URL, jsonLd, pageMetadata } from "@/lib/seo";
+import { gamesCta } from "@/components/sites/boostlab/content";
+import { jsonLd, pageMetadata } from "@/lib/seo";
+import { gamesItemList } from "@/lib/structuredData";
 
 export const metadata: Metadata = pageMetadata({
   title: "Games",
@@ -12,23 +13,7 @@ export const metadata: Metadata = pageMetadata({
 });
 
 /** Our games as structured data, so search engines can show them as games. */
-const gamesList = {
-  "@context": "https://schema.org",
-  "@type": "ItemList",
-  name: "Games by Boostlab Game Studio",
-  itemListElement: gamesShowreel.games.map((game, i) => ({
-    "@type": "ListItem",
-    position: i + 1,
-    item: {
-      "@type": "VideoGame",
-      name: game.title,
-      image: `${SITE_URL}${game.poster.url}`,
-      ...(game.url ? { url: game.url, gamePlatform: "PC", applicationCategory: "Game" } : {}),
-      author: { "@id": `${SITE_URL}/#organization` },
-      publisher: { "@id": `${SITE_URL}/#organization` },
-    },
-  })),
-};
+const gamesList = { "@context": "https://schema.org", ...gamesItemList() };
 
 export default function GamesPage() {
   return (

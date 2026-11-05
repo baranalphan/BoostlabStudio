@@ -4,6 +4,7 @@ import "./globals.css";
 import { Header } from "@/components/sites/boostlab/layout/Header";
 import { Footer } from "@/components/sites/boostlab/layout/Footer";
 import { SmoothScroll } from "@/components/sites/boostlab/layout/SmoothScroll";
+import { AgentTools } from "@/components/sites/boostlab/layout/AgentTools";
 import {
   SITE_DESCRIPTION,
   SITE_NAME,
@@ -58,6 +59,13 @@ const organization = {
       url: SITE_URL,
       logo: `${SITE_URL}/icon.png`,
       email: "info@boostlabgames.com",
+      contactPoint: {
+        "@type": "ContactPoint",
+        contactType: "customer support",
+        email: "info@boostlabgames.com",
+        url: `${SITE_URL}/support`,
+        availableLanguage: ["en"],
+      },
       sameAs: Object.values(SOCIAL_LINKS),
     },
     {
@@ -78,6 +86,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <body>
         <script type="application/ld+json" dangerouslySetInnerHTML={jsonLd(organization)} />
         <SmoothScroll />
+        <AgentTools />
         <Header />
         <main id="main">{children}</main>
         <Footer />

@@ -42,7 +42,7 @@ export function Header() {
       <Container>
         <div className={styles.main}>
           <div className={styles.logo}>
-            <Link href="/" aria-label="Boostlab home" className={styles.logoLink}>
+            <Link href="/" aria-label="Boostlab Studio home" className={styles.logoLink}>
               <Image
                 src={header.logo.url}
                 alt={header.logo.alt}

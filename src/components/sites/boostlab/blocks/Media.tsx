@@ -2,6 +2,7 @@ import { cn } from "@/lib/utils";
 import { Container, Kicker, Spacer } from "../ui/Layout";
 import { SplitText } from "../ui/SplitText";
 import { Reveal } from "../ui/Reveal";
+import { LazyVideo } from "../ui/LazyVideo";
 import type { SiteMedia } from "@/types/boostlab";
 import styles from "./Media.module.css";
 
@@ -56,15 +57,7 @@ export function Media({
           <div className={cn(styles.mediaOuter, styles.perspective)}>
             <div className={styles.mediaInner}>
               <div className={styles.mediaFill}>
-                <video
-                  src={media.url}
-                  autoPlay
-                  muted
-                  loop
-                  playsInline
-                  preload="metadata"
-                  aria-label={media.alt ?? undefined}
-                />
+                <LazyVideo src={media.url} label={media.alt ?? undefined} />
               </div>
             </div>
           </div>

@@ -44,5 +44,5 @@ next-env.d.ts
 # Local temp files
 temp/
 
-# Source video masters (28–77 MB): the site serves compressed copies from public/
+# Source video masters (28–77 MB): the site serves compressed copies from src/assets/
 BoostlabStudioAssets/**/*.mp4

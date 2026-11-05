@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { AGENT_PAGES } from "./agentPages";
 
 /**
  * Site-wide SEO settings. Canonical URLs, the sitemap and share cards all point at
@@ -42,11 +43,16 @@ export function pageMetadata({
   path: string;
 }): Metadata {
   const fullTitle = title ? `${title} | ${SITE_NAME}` : SITE_NAME;
+  const markdown = Object.values(AGENT_PAGES).find((page) => page.path === path)?.markdown;
 
   return {
     ...(title ? { title } : {}),
     description,
-    alternates: { canonical: path },
+    alternates: {
+      canonical: path,
+      // The page's Markdown copy, for AI agents.
+      ...(markdown ? { types: { "text/markdown": markdown } } : {}),
+    },
     openGraph: {
       type: "website",
       siteName: SITE_NAME,

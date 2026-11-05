@@ -100,7 +100,14 @@ export function ContactForm() {
             </div>
           </div>
 
-          <form className={styles.form} action={formAction}>
+          {/* Also a WebMCP tool, so a browser's AI agent can fill it in for the visitor; the
+              visitor still presses send themselves. */}
+          <form
+            className={styles.form}
+            action={formAction}
+            toolname="contact_boostlab"
+            tooldescription="Send a message to Boostlab Game Studio: player support, bug reports, feedback, business or press. Needs the sender's name, email, a subject and the message."
+          >
             {field("name")}
             {field("email")}
             {field("subject", styles.full)}

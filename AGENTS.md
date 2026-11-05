@@ -1,6 +1,6 @@
 <!-- BEGIN:nextjs-agent-rules -->
 
-# This is NOT the Next.js you know
+## This is NOT the Next.js you know
 
 This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
 
@@ -34,7 +34,7 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 ## Project Structure
 ```
 src/
-  app/                    # Routes: /, /games, /support, plus SEO files
+  app/                    # Routes: /, /games, /support, /terms, plus SEO and AI-agent files (llms.txt, md/)
   components/sites/boostlab/
     blocks/               # Page sections
     layout/               # Header, footer, smooth scroll
@@ -43,7 +43,8 @@ src/
     content.ts            # All copy, links and media paths
   lib/                    # cn() and SEO helpers
   types/                  # TypeScript types
-public/sites/boostlab/    # Images, fonts and videos
+public/sites/boostlab/    # Images (served as-is, no cache headers on Hostinger)
+src/assets/boostlab/      # Fonts and videos, bundled under hashed, long-cached URLs
 scripts/                  # Asset build scripts (e.g. themed backdrops and sprites)
 BoostlabStudioAssets/     # Source game art (not served)
 ```

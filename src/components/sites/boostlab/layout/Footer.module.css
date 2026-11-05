@@ -83,6 +83,22 @@
   color: rgb(0 0 0 / 0.6);
 }
 
+/* Legal links ride along after the copyright, set off by a thin divider. */
+.legal {
+  margin-left: 0.75em;
+  padding-left: 0.75em;
+  border-left: 1px solid rgb(0 0 0 / 0.25);
+  text-decoration: none;
+  transition: color 0.3s var(--ease-slide);
+}
+
+.legal:hover,
+.legal:focus-visible {
+  color: var(--black);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
 .socials {
   list-style: none;
   display: flex;

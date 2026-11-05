@@ -273,7 +273,7 @@
 
 @font-face {
   font-family: RuderPlakatLL;
-  src: url("/sites/boostlab/fonts/RuderPlakatLL-Regular.woff2") format("woff2");
+  src: url("../assets/boostlab/fonts/RuderPlakatLL-Regular.woff2") format("woff2");
   font-display: swap;
   font-weight: 400;
   font-style: normal;
@@ -288,14 +288,14 @@
 }
 @font-face {
   font-family: PPNeueMontreal;
-  src: url("/sites/boostlab/fonts/PPNeueMontreal-Regular.woff2") format("woff2");
+  src: url("../assets/boostlab/fonts/PPNeueMontreal-Regular.woff2") format("woff2");
   font-display: swap;
   font-weight: 400;
   font-style: normal;
 }
 @font-face {
   font-family: PPNeueMontreal;
-  src: url("/sites/boostlab/fonts/PPNeueMontreal-Medium.woff2") format("woff2");
+  src: url("../assets/boostlab/fonts/PPNeueMontreal-Medium.woff2") format("woff2");
   font-display: swap;
   font-weight: 500;
   font-style: normal;
@@ -310,7 +310,7 @@
 }
 @font-face {
   font-family: PPNeueMontrealMono;
-  src: url("/sites/boostlab/fonts/PPNeueMontrealMono-Medium.woff2") format("woff2");
+  src: url("../assets/boostlab/fonts/PPNeueMontrealMono-Medium.woff2") format("woff2");
   font-display: swap;
   font-weight: 500;
   font-style: normal;
