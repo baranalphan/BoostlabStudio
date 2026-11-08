@@ -89,7 +89,14 @@ export function Header() {
       </Container>
 
       <div className={styles.mobileNav} id="mobile-nav" data-open={menuOpen ? "true" : "false"}>
-        <nav aria-label="Mobile">
+        {/* The header outlives client-side navigation, so a tapped link closes the menu
+            itself; otherwise it would stay open over the new page. */}
+        <nav
+          aria-label="Mobile"
+          onClick={(event) => {
+            if ((event.target as Element).closest("a")) setMenuOpen(false);
+          }}
+        >
           <ul className={styles.mobileMenu}>
             {header.links.map((link) => (
               <li key={link.label}>
