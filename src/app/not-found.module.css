@@ -1,0 +1,30 @@
+.main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-m);
+  min-height: 80svh;
+  padding: 10rem calc(var(--container-pad) * 2) var(--space-l);
+  background-color: var(--boostlab-black);
+  color: var(--dark-white);
+  text-align: center;
+}
+
+.code {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: var(--fs-cap);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: rgb(255 255 255 / 0.6);
+}
+
+.heading {
+  font-family: var(--font-display);
+  font-weight: 400;
+  text-transform: uppercase;
+  font-size: var(--fs-h2);
+  line-height: 0.87;
+  letter-spacing: 0.04em;
+}

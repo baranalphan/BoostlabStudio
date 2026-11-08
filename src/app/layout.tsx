@@ -1,8 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
-import { Header } from "@/components/sites/boostlab/layout/Header";
-import { Footer } from "@/components/sites/boostlab/layout/Footer";
 import { SmoothScroll } from "@/components/sites/boostlab/layout/SmoothScroll";
 import { AgentTools } from "@/components/sites/boostlab/layout/AgentTools";
 import {
@@ -87,9 +85,9 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <script type="application/ld+json" dangerouslySetInnerHTML={jsonLd(organization)} />
         <SmoothScroll />
         <AgentTools />
-        <Header />
-        <main id="main">{children}</main>
-        <Footer />
+        {/* The header and footer live in (site)/layout.tsx, so the QR landing page in
+            (qr) can open without them. */}
+        {children}
       </body>
     </html>
   );

@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
-import { sendContactMessage } from "@/app/support/actions";
+import { sendContactMessage } from "@/app/(site)/support/actions";
 import { cn } from "@/lib/utils";
 import type { ContactField, ContactFormState } from "@/types/boostlab";
 import { Container, Grid, Kicker, Spacer } from "../ui/Layout";

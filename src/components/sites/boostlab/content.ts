@@ -215,6 +215,28 @@ export const supportContact = {
   error: "Something went wrong and your message wasn't sent. Please try again.",
 };
 
+/* ----------------------------------------------------------------- qr landing */
+
+/**
+ * The page behind the QR stickers, at boostlabgames.com/q/<code>. Nothing on the site
+ * links to it, it stays out of the sitemap and search results, and any code not listed
+ * here is a 404. To retire a leaked code, add a new one, print new stickers and then
+ * remove the old one.
+ */
+export const qrLanding = {
+  codes: ["a4455576"],
+  lang: "tr",
+  home: "Ana Sayfa",
+  kicker: "Boostlab Studio",
+  title: "Hoş geldin!",
+  photoLink: {
+    label: "Fotoğrafını Gönder",
+    url: "https://docs.google.com/forms/d/e/1FAIpQLScKgpPN1YfSSuwkeNc6V1DKsKGEcxZ7IDxK_xtaa2GBENerCg/viewform?usp=dialog",
+  },
+  steamLink: { label: "Steam Sayfası", url: IDLE_REEF_STEAM },
+  socialsLabel: "Sosyal medya",
+};
+
 /* --------------------------------------------------------------------- terms */
 
 /** The Terms of Use page. Bump `updated` whenever the wording changes. */

@@ -1,0 +1,212 @@
+/* One phone screen: home link at the top, the content centred in the free space and the
+   socials pinned to the bottom. Plain black, like the rest of the site. */
+.main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  min-height: 100svh;
+  padding: max(1.6rem, env(safe-area-inset-top)) 1.6rem max(2.4rem, env(safe-area-inset-bottom));
+  background-color: var(--boostlab-black);
+  color: var(--dark-white);
+}
+
+.home {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  min-height: 4.4rem;
+  padding: 0 1.4rem;
+  border: 0.1rem solid var(--dark-grey-1);
+  border-radius: 0.5rem;
+  background-color: var(--dark-grey-2);
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: var(--fs-cap);
+  line-height: 1;
+  letter-spacing: -0.007em;
+  text-transform: uppercase;
+  transition:
+    background-color 0.4s var(--ease-slide),
+    border-color 0.4s var(--ease-slide),
+    color 0.4s var(--ease-slide);
+}
+
+.home:hover,
+.home:focus-visible {
+  background-color: var(--white);
+  border-color: var(--white);
+  color: var(--black);
+}
+
+/* The arrow points up-right; turned to point back, towards home. */
+.homeIcon {
+  width: 0.8rem;
+  transform: rotate(-135deg);
+}
+
+.content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 44rem;
+  padding: 3.2rem 0;
+  text-align: center;
+}
+
+.logo {
+  width: auto;
+  height: 9.6rem;
+  margin-bottom: 2.4rem;
+  animation: rise 0.8s var(--ease-split) both;
+}
+
+.kicker {
+  margin-bottom: 1.2rem;
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: var(--fs-cap);
+  line-height: 1;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: rgb(255 255 255 / 0.6);
+  animation: rise 0.8s 0.05s var(--ease-split) both;
+}
+
+.heading {
+  margin-bottom: 4rem;
+  font-family: var(--font-display);
+  font-weight: 400;
+  text-transform: uppercase;
+  font-size: min(var(--fs-h3), 18vw);
+  line-height: 0.88;
+  letter-spacing: 0.03em;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+  width: 100%;
+}
+
+.action {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.2rem;
+  width: 100%;
+  min-height: 7.2rem;
+  padding: 1.6rem 2.4rem;
+  border: 0.1rem solid transparent;
+  border-radius: 0.8rem;
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 1.8rem;
+  line-height: 1.1;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    background-color 0.4s var(--ease-slide),
+    border-color 0.4s var(--ease-slide),
+    color 0.4s var(--ease-slide),
+    transform 0.2s var(--ease-slide);
+  animation: rise 0.8s var(--ease-split) both;
+}
+
+.action:active {
+  transform: scale(0.97);
+}
+
+.actionIcon {
+  width: 2.6rem;
+  height: 2.6rem;
+  flex-shrink: 0;
+}
+
+/* The main call to action: white, turning the logo's blue on hover like the Steam
+   button on the games page. */
+.primary {
+  background-color: var(--white);
+  color: var(--boostlab-black);
+  animation-delay: 0.25s;
+}
+
+.primary:hover,
+.primary:focus-visible {
+  background-color: #3abcf8;
+}
+
+/* The dark chip of the site's secondary buttons, inverting to white. */
+.secondary {
+  background-color: var(--dark-grey-2);
+  border-color: var(--dark-grey-1);
+  color: var(--dark-white);
+  animation-delay: 0.35s;
+}
+
+.secondary:hover,
+.secondary:focus-visible {
+  background-color: var(--white);
+  border-color: var(--white);
+  color: var(--black);
+}
+
+.socials {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.4rem;
+  animation: rise 0.8s 0.45s var(--ease-split) both;
+}
+
+.social {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 5.2rem;
+  height: 5.2rem;
+  border-radius: 50%;
+  border: 0.1rem solid rgb(255 255 255 / 0.14);
+  color: var(--dark-white);
+  transition:
+    background-color 0.3s var(--ease-slide),
+    border-color 0.3s var(--ease-slide),
+    color 0.3s var(--ease-slide),
+    transform 0.3s var(--ease-slide);
+}
+
+.social:hover,
+.social:focus-visible {
+  background-color: var(--white);
+  border-color: var(--white);
+  color: var(--black);
+  transform: translateY(-2px);
+}
+
+.socialIcon {
+  width: 2.2rem;
+  height: 2.2rem;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(1.6rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .logo,
+  .kicker,
+  .action,
+  .socials {
+    animation: none;
+  }
+}
