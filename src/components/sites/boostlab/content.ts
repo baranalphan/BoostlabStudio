@@ -233,7 +233,7 @@ export const qrLanding = {
     label: "Fotoğrafını Gönder",
     url: "https://docs.google.com/forms/d/e/1FAIpQLScKgpPN1YfSSuwkeNc6V1DKsKGEcxZ7IDxK_xtaa2GBENerCg/viewform?usp=dialog",
   },
-  steamLink: { label: "Steam Sayfası", url: IDLE_REEF_STEAM },
+  steamLink: { label: "Steam Sayfası", url: "https://store.steampowered.com/curator/46610619" },
   socialsLabel: "Sosyal medya",
 };
 
